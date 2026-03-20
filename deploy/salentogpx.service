@@ -1,0 +1,16 @@
+[Unit]
+Description=Salento GPX - Next.js PWA
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/apps/salentogpx
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3010
+
+[Install]
+WantedBy=multi-user.target
