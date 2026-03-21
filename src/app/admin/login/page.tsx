@@ -22,12 +22,12 @@ export default function AdminLoginPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || 'Accesso fallito');
       }
       router.push('/admin');
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : 'Accesso fallito');
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm space-y-6">
         <h1 className="text-2xl font-bold text-slate-900 text-center">
-          Admin Login
+          Accesso amministrazione
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

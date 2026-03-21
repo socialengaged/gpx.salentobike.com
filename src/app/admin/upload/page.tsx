@@ -95,7 +95,7 @@ export default function AdminUploadPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Upload GPX</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Carica GPX</h1>
 
       <div className="space-y-4">
         <div>
@@ -195,7 +195,7 @@ export default function AdminUploadPage() {
 
       <Link href="/admin" className="mt-8">
         <Button variant="outline" size="md">
-          Back to Admin
+          Torna all'amministrazione
         </Button>
       </Link>
     </div>

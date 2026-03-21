@@ -38,7 +38,7 @@ export default async function AdminRouteEditPage({ params }: PageProps) {
 
       <Link href="/admin/routes" className="mt-6">
         <Button variant="outline" size="md">
-          Back to Routes
+          Torna alle route
         </Button>
       </Link>
     </div>

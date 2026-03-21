@@ -43,7 +43,7 @@ export function MapControls({
           type="button"
           onClick={handleRecenter}
           className="w-10 h-10 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-50 active:scale-95 min-w-[44px] min-h-[44px]"
-          aria-label="Recenter map"
+          aria-label="Centra mappa"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="3" />

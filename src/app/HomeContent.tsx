@@ -23,7 +23,7 @@ export function HomeContent() {
       {isOffline && lastRoute && (
         <Link href={`/routes/${lastRoute.slug}`}>
           <Button variant="secondary" size="lg" fullWidth>
-            Open last route: {lastRoute.title}
+            Apri ultima route: {lastRoute.title}
           </Button>
         </Link>
       )}
@@ -34,7 +34,7 @@ export function HomeContent() {
       </Link>
       <Link href="/saved">
         <Button variant="outline" size="lg" fullWidth>
-          Saved Routes
+          Route salvate
         </Button>
       </Link>
       {openInstallModal && (
@@ -44,7 +44,7 @@ export function HomeContent() {
           fullWidth
           onClick={openInstallModal}
         >
-          Install App
+          Installa app
         </Button>
       )}
     </div>

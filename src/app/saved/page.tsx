@@ -36,7 +36,7 @@ export default function SavedRoutesPage() {
         <p className="text-slate-600 text-center mb-4 text-lg">
           No saved routes yet.</p>
         <p className="text-base text-slate-500 text-center">
-          Open a route and tap &quot;Save offline&quot; to access it without connection.
+          Apri una route e tocca &quot;Salva offline&quot; per accedervi senza connessione.
         </p>
       </div>
     );
@@ -44,7 +44,7 @@ export default function SavedRoutesPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-auto px-5 py-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">Saved Routes</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">Route salvate</h1>
       <p className="text-slate-600 mb-6 text-base">
         Available offline. Tap to open.
       </p>

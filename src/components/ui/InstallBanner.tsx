@@ -26,7 +26,7 @@ export function InstallBanner() {
   return (
     <div className="flex-shrink-0 px-5 py-4 bg-sky-50 border-b-2 border-sky-200 flex items-center justify-between gap-4">
       <p className="text-base text-sky-700">
-        {canUsePrompt ? 'Install for offline use' : 'Add to Home screen for offline use'}
+        {canUsePrompt ? 'Installa per usare offline' : 'Aggiungi a schermata Home per usare offline'}
       </p>
       <div className="flex items-center gap-3">
         <Button

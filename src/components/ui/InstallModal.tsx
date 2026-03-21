@@ -77,7 +77,7 @@ export function InstallModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="install-modal-title" className="text-xl font-bold text-slate-900 mb-4">
-          Install Salento Bike
+          Installa Salento Bike
         </h2>
 
         {canUsePrompt && onPrompt ? (
@@ -87,7 +87,7 @@ export function InstallModal({
             </p>
             <div className="flex gap-3">
               <Button variant="primary" size="lg" onClick={handleInstall} className="flex-1">
-                Install now
+                Installa ora
               </Button>
               <Button variant="outline" size="lg" onClick={onClose}>
                 Annulla

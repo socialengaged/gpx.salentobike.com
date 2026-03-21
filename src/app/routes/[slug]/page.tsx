@@ -30,7 +30,7 @@ export default async function RouteDetailPage({ params }: PageProps) {
   return (
     <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
       <div className="flex-shrink-0 px-4 py-3 flex items-center gap-3 flex-wrap">
-        <h1 className="text-lg font-bold text-slate-900 truncate min-w-0 flex-1">
+        <h1 className="text-xl font-bold text-slate-900 truncate min-w-0 flex-1">
           {route.title}
         </h1>
         <div className="flex gap-2 shrink-0">
@@ -40,7 +40,7 @@ export default async function RouteDetailPage({ params }: PageProps) {
           </Chip>
         </div>
       </div>
-      <p className="flex-shrink-0 px-4 pb-2 text-slate-600 text-sm line-clamp-1">
+      <p className="flex-shrink-0 px-4 pb-2 text-slate-600 text-base line-clamp-2">
         {route.shortDescription}
       </p>
 

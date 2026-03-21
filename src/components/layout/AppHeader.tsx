@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { useInstallModal } from '@/lib/pwa/InstallContext';
 
 const navLinks: { href: string; label: string; className?: string; isInstall?: boolean }[] = [
-  { href: '/saved', label: 'Saved' },
-  { href: '/routes', label: 'Routes' },
-  { href: '#', label: 'Install App', isInstall: true },
-  { href: '/admin', label: 'Admin', className: 'text-slate-400' },
+  { href: '/saved', label: 'Salvate' },
+  { href: '/routes', label: 'Route' },
+  { href: '#', label: 'Installa app', isInstall: true },
+  { href: '/admin', label: 'Amministrazione', className: 'text-slate-400' },
 ];
 
 const linkClass = 'text-slate-600 hover:text-slate-900 text-base font-medium min-h-[52px] flex items-center px-5 py-4';

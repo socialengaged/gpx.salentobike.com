@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Salento Bike Routes',
-  description: 'Bike routes for Salento - view, save, and follow routes offline',
+  description: 'Route in bici per il Salento - visualizza, salva e segui le route offline',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,

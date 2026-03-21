@@ -127,4 +127,40 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-20*
+## Storico modifiche
+
+| Data | Modifica |
+|------|----------|
+| 2026-03-20 | Fix mappa tagliata in produzione: layout flex (h-dvh, min-h-0), resize MapLibre ritardato |
+| 2026-03-20 | Label "Installa app" → "Install app" (HomeContent, AppHeader, InstallBanner, InstallModal) |
+| 2026-03-20 | Setup Git: init, primo commit. Per push: creare repo su GitHub/GitLab, poi `git remote add origin <url>` e `git push -u origin master` |
+| 2026-03-20 | Integrazione comuni Puglia: script build-comuni (regione Puglia), ComuniLayer, geocoding Nominatim |
+| 2026-03-20 | App tutta in italiano; label "Installa app" |
+| 2026-03-20 | UI mobile: titoli/stats più grandi, grid 2 col su telefono, pill comuni touch-friendly |
+| 2026-03-20 | Password sito: cookie `site_auth`, password `salentoFriends`, pagina `/accesso`, API `/api/site-login` |
+| 2026-03-20 | Performance comuni: `comuni-puglia-lite.json` (~25KB) + layer MapLibre GeoJSON (cerchi GPU) al posto di 271 marker DOM |
+
+---
+
+## Password accesso sito (2026-03-20)
+
+- **Password**: `salentoFriends` (definita in `src/lib/site-auth.ts`)
+- **Flusso**: senza cookie valido → redirect a `/accesso` → POST `/api/site-login` → cookie httpOnly 30 giorni
+- **Admin** (`/admin`): richiede sia accesso sito sia login admin (`social123`)
+- **Asset pubblici** (senza password): `_next/static`, `/data/`, `/mappe/`, `/icons/`, file con estensione (manifest, sw, immagini)
+
+---
+
+## Fix mappa tagliata (2026-03-20)
+
+**Problema**: Mappa tagliata su mobile e desktop in produzione; OK in locale.
+
+**Fix applicati**:
+- `layout.tsx`: body `h-full min-h-full`
+- `MobileShell.tsx`: `h-dvh min-h-dvh`, main `min-h-0`
+- `RouteDetailView.tsx`: contenitore mappa `flex-1 min-h-0 min-h-[200px] overflow-hidden`
+- `RouteMap.tsx`: resize MapLibre a 100ms e 400ms dopo load per layout shift
+
+---
+
+*Ultimo aggiornamento: 2026-03-20 (mobile, password sito, comuni GPU)*

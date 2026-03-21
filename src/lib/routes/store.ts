@@ -46,7 +46,7 @@ export function getGpxRouteSummaries(): RouteSummary[] {
           ? 'Bari - Foggia, 10 tappe'
           : r.slug === 'lecce-loop'
             ? 'Lecce - Martano - Otranto, più tappe e varianti'
-            : `Route from ${r.title}`,
+            : `Route da ${r.title}`,
     category: 'road' as const,
     distanceMeters: 0,
     elevationGainMeters: 0,

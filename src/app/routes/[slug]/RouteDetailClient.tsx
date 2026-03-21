@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import type { Route } from '@/lib/routes/types';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { ComuniSearch } from '@/components/route/ComuniSearch';
 import { RouteTools } from '@/components/route/RouteTools';
 import { useOfflineStatus } from '@/lib/hooks/useOfflineStatus';
 import { useGpsTracking } from '@/lib/hooks/useGpsTracking';
@@ -26,24 +27,25 @@ interface RouteDetailClientProps {
   onSplitResult?: (routes: [Route, Route]) => void;
   renderMap?: (
     userPosition: { lat: number; lng: number; accuracy?: number } | null,
-    mapState?: MapState | null
+    mapState?: MapState | null,
+    showComuni?: boolean
   ) => React.ReactNode;
   renderStats?: React.ReactNode;
 }
 
 const CONTACT_URL = 'tel:+393331234567';
-const CONTACT_LABEL = 'Contact Salento Bike';
+const CONTACT_LABEL = 'Contatta Salento Bike';
 
 function gpsStateToChip(state: string): { label: string; variant: 'default' | 'success' | 'warning' | 'error' } {
   switch (state) {
     case 'gps-ok':
       return { label: 'GPS OK', variant: 'success' };
     case 'gps-weak':
-      return { label: 'GPS weak', variant: 'warning' };
+      return { label: 'GPS debole', variant: 'warning' };
     case 'gps-unavailable':
-      return { label: 'Location unavailable', variant: 'error' };
+      return { label: 'Posizione non disponibile', variant: 'error' };
     case 'possibly-off-route':
-      return { label: 'Possibly off route', variant: 'warning' };
+      return { label: 'Possibile fuori percorso', variant: 'warning' };
     default:
       return { label: 'GPS', variant: 'default' };
   }
@@ -60,6 +62,8 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
   const [autoCenter, setAutoCenter] = useState(false);
   const [recording, setRecording] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [showComuni, setShowComuni] = useState(true);
+  const [showComuniSearch, setShowComuniSearch] = useState(false);
   const isOffline = useOfflineStatus();
   const { state: gpsState, offRoute, position, progressFraction } = useGpsTracking(route, tracking);
   const currentPos = useCurrentPosition(!tracking);
@@ -117,10 +121,10 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
 
   return (
     <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-      {renderMap?.(userPosition, mapState)}
+      {renderMap?.(userPosition, mapState, showComuni)}
       {tracking && offRoute && (
         <div className="flex-shrink-0 px-4 py-2 bg-amber-100 text-amber-800 text-sm text-center">
-          Possibly off route
+          Possibile fuori percorso
         </div>
       )}
       <div className="flex-shrink-0 bg-white border-t border-slate-200">
@@ -147,11 +151,12 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
             {tracking && (
               <div className="flex justify-between items-center text-sm">
                 <span className="text-slate-600">
-                  {formatDistance(Math.max(0, distanceRemaining))} left
+                  {formatDistance(Math.max(0, distanceRemaining))} rimanenti
                 </span>
                 <span className="font-medium text-slate-900">{progressPercent}%</span>
               </div>
             )}
+            {showComuniSearch && <ComuniSearch />}
             {renderStats}
             {onRouteChange && (
               <>
@@ -170,7 +175,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   size="md"
                   onClick={() => onRouteChange?.(splitRoutes[0])}
                 >
-                  Part 1
+                  Parte 1
                 </Button>
                 <Button
                   variant={route.id === splitRoutes[1].id ? 'primary' : 'outline'}
@@ -184,7 +189,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   size="md"
                   onClick={() => onSplitRoutesChange?.(null)}
                 >
-                  Clear
+                  Annulla
                 </Button>
                   </div>
                 )}
@@ -192,6 +197,24 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
             )}
             <div className="space-y-3">
               <div className="flex gap-2 flex-wrap items-center">
+                <button
+                  type="button"
+                  onClick={() => setShowComuni((s) => !s)}
+                  className={`px-3 py-2 min-h-[40px] rounded-full text-base font-medium transition-colors ${
+                    showComuni ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {showComuni ? 'Comuni attivi' : 'Comuni disattivi'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowComuniSearch((s) => !s)}
+                  className={`px-3 py-2 min-h-[40px] rounded-full text-base font-medium transition-colors ${
+                    showComuniSearch ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {showComuniSearch ? 'Cerca comuni ▼' : 'Cerca comuni ▶'}
+                </button>
                 <Chip variant={isOffline ? 'warning' : 'success'}>
                   {isOffline ? 'Offline' : 'Online'}
                 </Chip>
@@ -202,11 +225,11 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
             size="md"
             onClick={() => window.location.reload()}
           >
-            Retry GPS
+            Riprova GPS
           </Button>
         )}
                 {tracking && (
-                  <Chip variant="success">Tracking active</Chip>
+                  <Chip variant="success">Tracciamento attivo</Chip>
                 )}
               </div>
               <div className="flex flex-col gap-3">
@@ -216,7 +239,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   fullWidth
                   onClick={handleStartRoute}
                 >
-                  {tracking ? 'Stop Tracking' : 'Start Route'}
+                  {tracking ? 'Ferma tracking' : 'Avvia route'}
                 </Button>
                 <Button
                   variant="outline"
@@ -225,7 +248,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   onClick={handleSaveOffline}
                   disabled={saved}
                 >
-                  {saved ? 'Saved for offline' : 'Save offline'}
+                  {saved ? 'Salvata per offline' : 'Salva offline'}
                 </Button>
                 <Button
                   variant="outline"
@@ -233,7 +256,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   fullWidth
                   onClick={handleRecordToggle}
                 >
-                  {recording ? 'Stop & export recording' : 'Record track'}
+                  {recording ? 'Ferma e esporta registrazione' : 'Registra traccia'}
                 </Button>
                 <a href={CONTACT_URL}>
                   <Button variant="ghost" size="lg" fullWidth>
@@ -252,7 +275,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
               fullWidth
               onClick={handleStartRoute}
             >
-              {tracking ? 'Stop Tracking' : 'Start Route'}
+              {tracking ? 'Ferma tracking' : 'Avvia route'}
             </Button>
           </div>
         )}

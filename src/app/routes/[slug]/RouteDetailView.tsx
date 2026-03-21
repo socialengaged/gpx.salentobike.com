@@ -41,12 +41,13 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
       splitRoutes={splitRoutes}
       onSplitRoutesChange={setSplitRoutes}
       onSplitResult={handleSplitResult}
-      renderMap={(userPosition, mapState) => (
+      renderMap={(userPosition, mapState, showComuni = true) => (
         <div className="flex-1 min-h-0 min-h-[200px] relative w-full overflow-hidden">
           <RouteMap
             route={route}
             userPosition={userPosition}
             className="absolute inset-0"
+            showComuni={showComuni}
           >
             {mapState && (
               <MapControls
@@ -61,34 +62,34 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
       )}
       renderStats={
         <>
-          <div className="grid grid-cols-4 gap-3 text-center text-base">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-base">
             <div>
-              <div className="font-semibold text-slate-900">
+              <div className="text-lg font-semibold text-slate-900">
                 {formatDistance(route.distanceMeters)}
               </div>
-              <div className="text-slate-500 text-sm">Distanza</div>
+              <div className="text-slate-500 text-base">Distanza</div>
             </div>
             <div>
-              <div className="font-semibold text-slate-900">
+              <div className="text-lg font-semibold text-slate-900">
                 +{Math.round(route.elevationGainMeters)} m
               </div>
-              <div className="text-slate-500 text-sm">Dislivello +</div>
+              <div className="text-slate-500 text-base">Dislivello +</div>
             </div>
             <div>
-              <div className="font-semibold text-slate-900">
+              <div className="text-lg font-semibold text-slate-900">
                 -{Math.round(route.elevationLossMeters)} m
               </div>
-              <div className="text-slate-500 text-sm">Dislivello -</div>
+              <div className="text-slate-500 text-base">Dislivello -</div>
             </div>
             <div>
-              <div className="font-semibold text-slate-900 capitalize">
+              <div className="text-lg font-semibold text-slate-900 capitalize">
                 {route.difficulty}
               </div>
-              <div className="text-slate-500 text-sm">Livello</div>
+              <div className="text-slate-500 text-base">Livello</div>
             </div>
           </div>
           <div>
-            <div className="font-semibold text-slate-900 text-sm mb-1">
+            <div className="font-semibold text-slate-900 text-base mb-1">
               {formatDuration(route.estimatedDuration)} stimati
             </div>
             <RouteElevationStats route={route} />

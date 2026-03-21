@@ -12,7 +12,7 @@ export default async function AdminPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Pannello amministrazione</h1>
 
       <div className="grid grid-cols-2 gap-3 mb-8">
         <div className="p-4 rounded-lg bg-white border border-slate-200">
@@ -46,7 +46,7 @@ export default async function AdminPage() {
               <div className="font-medium text-slate-900">{m.title}</div>
               <div className="text-sm text-slate-500">
                 {formatDistance(m.distanceMeters)} • +{m.elevationGainMeters} m •{' '}
-                {m.source === 'gpx' ? 'GPX' : 'Upload'}
+                {m.source === 'gpx' ? 'GPX' : 'Caricata'}
               </div>
             </div>
             <Link href={`/admin/routes/${m.slug}/edit`}>

@@ -60,7 +60,7 @@ export async function loadGpxRoute(slug: string): Promise<Route | null> {
       id: `gpx-${base}`,
       slug: base,
       title: firstTrack.name || base.replace(/-/g, ' '),
-      shortDescription: `Route from ${base.replace(/-/g, ' ')}`,
+      shortDescription: `Route da ${base.replace(/-/g, ' ')}`,
       language: 'en' as const,
       category: 'road' as const,
       distanceMeters,

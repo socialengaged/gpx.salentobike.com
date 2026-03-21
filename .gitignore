@@ -23,6 +23,9 @@
 # data (user-uploaded routes)
 /data
 
+# comuni build cache
+scripts/.comuni-geocode-cache.json
+
 # misc
 .DS_Store
 *.pem

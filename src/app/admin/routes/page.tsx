@@ -12,7 +12,7 @@ export default async function AdminRoutesPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Manage Routes</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Gestisci route</h1>
 
       <ul className="space-y-3">
         {routes.map((r) => (
@@ -37,7 +37,7 @@ export default async function AdminRoutesPage() {
 
       <Link href="/admin" className="mt-6">
         <Button variant="outline" size="md">
-          Back to Admin
+          Torna all'amministrazione
         </Button>
       </Link>
     </div>

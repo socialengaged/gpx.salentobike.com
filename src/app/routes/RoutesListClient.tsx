@@ -43,12 +43,12 @@ export function RoutesListClient() {
         );
       } else {
         const res = await fetch('/api/routes');
-        if (!res.ok) throw new Error('Failed to load');
+        if (!res.ok) throw new Error('Errore nel caricamento');
         const data = await res.json();
         setRoutes(data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load routes');
+      setError(err instanceof Error ? err.message : 'Errore nel caricamento delle route');
       const local = await getLocalRoutes();
       setRoutes(
         local.map((r) => ({
@@ -83,7 +83,7 @@ export function RoutesListClient() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-5">
-        <p className="text-slate-600 text-lg">Loading routes...</p>
+        <p className="text-slate-600 text-lg">Caricamento route...</p>
         <Button variant="outline" size="lg" onClick={handleRetry}>
           Retry
         </Button>
@@ -95,9 +95,9 @@ export function RoutesListClient() {
     return (
       <div className="text-center py-10 text-slate-600 space-y-5">
         {isOffline ? (
-          <p className="text-base">No saved routes. Save routes while online for offline access.</p>
+          <p className="text-base">Nessuna route salvata. Salva le route quando sei online per usarle offline.</p>
         ) : (
-          <p className="text-base">No routes available.</p>
+          <p className="text-base">Nessuna route disponibile.</p>
         )}
         <Button variant="outline" size="lg" onClick={handleRetry}>
           Retry
@@ -110,7 +110,7 @@ export function RoutesListClient() {
     <>
       {error && (
         <div className="mb-4 p-4 rounded-xl bg-amber-50 text-amber-800 text-base">
-          {error} — showing saved routes.
+          {error} — mostrando le route salvate.
         </div>
       )}
       <ul className="space-y-5">
