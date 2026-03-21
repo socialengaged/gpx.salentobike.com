@@ -19,6 +19,7 @@ const DEFAULT_CSV = join(
 );
 const OUTPUT_PATH = join(PROJECT_ROOT, 'public', 'data', 'comuni-puglia.json');
 const LITE_OUTPUT_PATH = join(PROJECT_ROOT, 'public', 'data', 'comuni-puglia-lite.json');
+const POI_COUNTS_PATH = join(PROJECT_ROOT, 'public', 'data', 'poi-counts.json');
 const GEOCODE_CACHE_PATH = join(PROJECT_ROOT, 'scripts', '.comuni-geocode-cache.json');
 
 const COLS = [
@@ -74,6 +75,25 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+/** Allineato a src/app/comuni/[slug]/page.tsx — conteggi per popup mappa */
+function countBulletItems(text) {
+  if (!text) return 0;
+  const lines = text.split(/\n/).map((l) => l.trim());
+  const bullets = lines.filter((l) => /^\s*-\s/.test(l));
+  if (bullets.length > 0) return bullets.length;
+  const inline = text.split(/\s+-\s+/).filter((p) => p.length > 8);
+  if (inline.length >= 2) return inline.length;
+  return 0;
+}
+
+function countAttractionItems(text) {
+  if (!text) return 0;
+  const b = countBulletItems(text);
+  if (b > 0) return b;
+  const sentences = text.split(/\.\s+/).filter((s) => s.trim().length > 25);
+  return Math.max(0, sentences.length);
+}
+
 function parseCsv(path) {
   return new Promise((resolve, reject) => {
     const rows = [];
@@ -125,19 +145,49 @@ async function main() {
     });
   }
 
+  let poiBySlug = {};
+  try {
+    poiBySlug = JSON.parse(readFileSync(POI_COUNTS_PATH, 'utf8'));
+  } catch {
+    console.warn('No poi-counts.json — run: node scripts/fetch-poi-puglia.mjs');
+  }
+
+  for (const row of out) {
+    const p = poiBySlug[row.slug];
+    row.poi_fontane = p ? p.fontane : null;
+    row.poi_ristoranti = p ? p.ristoranti : null;
+    row.poi_farmacie = p ? p.farmacie : null;
+    row.poi_ospedali = p ? p.ospedali : null;
+    row.poi_bici = p ? p.bici : null;
+  }
+
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, JSON.stringify(out, null, 0), 'utf8');
   console.log('Written:', OUTPUT_PATH);
 
   const lite = out
     .filter((c) => c.lat != null && c.lon != null)
-    .map((c) => ({
-      istat: c.istat,
-      nome: c.nome,
-      slug: c.slug,
-      lat: c.lat,
-      lon: c.lon,
-    }));
+    .map((c) => {
+      const ts = countBulletItems(c.restaurants_section);
+      const ta = countAttractionItems(c.attractions_section);
+      return {
+        istat: c.istat,
+        nome: c.nome,
+        slug: c.slug,
+        lat: c.lat,
+        lon: c.lon,
+        prov: c.provincia_sigla || '',
+        hasRist: !!c.restaurants_section,
+        hasAttr: !!c.attractions_section,
+        txt_spec: ts > 0 ? ts : 0,
+        txt_attr: ta > 0 ? ta : 0,
+        poi_fontane: c.poi_fontane,
+        poi_ristoranti: c.poi_ristoranti,
+        poi_farmacie: c.poi_farmacie,
+        poi_ospedali: c.poi_ospedali,
+        poi_bici: c.poi_bici,
+      };
+    });
   writeFileSync(LITE_OUTPUT_PATH, JSON.stringify(lite, null, 0), 'utf8');
   console.log('Written:', LITE_OUTPUT_PATH, `(${lite.length} punti)`);
 }

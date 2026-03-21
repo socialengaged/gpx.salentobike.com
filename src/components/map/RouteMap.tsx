@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapContext } from './MapContext';
 import { ComuniLayer } from './ComuniLayer';
+import { FontaneLayer } from './FontaneLayer';
 import { RoutePolyline } from './RoutePolyline';
 import { UserLocationMarker } from './UserLocationMarker';
 import { WaypointLayer } from './WaypointLayer';
@@ -15,6 +16,7 @@ interface RouteMapProps {
   className?: string;
   children?: React.ReactNode;
   showComuni?: boolean;
+  showFontane?: boolean;
 }
 
 function getRouteBounds(route: Route): [[number, number], [number, number]] | null {
@@ -53,6 +55,7 @@ export function RouteMap({
   className = '',
   children,
   showComuni = true,
+  showFontane = true,
 }: RouteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<maplibregl.Map | null>(null);
@@ -157,6 +160,7 @@ export function RouteMap({
     <div ref={mapRef} className={`w-full h-full min-h-[200px] ${className}`.trim()}>
       <MapContext.Provider value={{ map, mapReady }}>
         {route && <RoutePolyline route={route} />}
+        {showFontane && <FontaneLayer />}
         {showComuni && <ComuniLayer />}
         {route?.waypoints && route.waypoints.length > 0 && (
           <WaypointLayer waypoints={route.waypoints} />

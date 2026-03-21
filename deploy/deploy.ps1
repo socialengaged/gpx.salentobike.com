@@ -7,7 +7,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$sshKey = "C:\Users\info\Desktop\ssh ORACLE\ssh-key-2026-01-02.key"
+# Chiave OVH in ~/.ssh (stesso file, spostato da Desktop\ssh ORACLE)
+$sshKey = Join-Path $env:USERPROFILE ".ssh\ssh-key-2026-01-02.key"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $remotePath = "/home/ubuntu/apps/salentogpx"
 

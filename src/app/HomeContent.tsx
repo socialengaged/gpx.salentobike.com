@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { getLastOpenedRoute } from '@/lib/db/localRoutes';
 import { useOfflineStatus } from '@/lib/hooks/useOfflineStatus';
 import { useInstallModal } from '@/lib/pwa/InstallContext';
+import { useT } from '@/i18n/useT';
 
 export function HomeContent() {
+  const t = useT();
   const [lastRoute, setLastRoute] = useState<{ slug: string; title: string } | null>(null);
   const isOffline = useOfflineStatus();
   const openInstallModal = useInstallModal()?.openInstallModal;
@@ -23,18 +25,18 @@ export function HomeContent() {
       {isOffline && lastRoute && (
         <Link href={`/routes/${lastRoute.slug}`}>
           <Button variant="secondary" size="lg" fullWidth>
-            Apri ultima route: {lastRoute.title}
+            {t('home.open_last_route')}: {lastRoute.title}
           </Button>
         </Link>
       )}
       <Link href="/routes">
         <Button variant="primary" size="lg" fullWidth>
-          Browse Routes
+          {t('home.cta_routes')}
         </Button>
       </Link>
       <Link href="/saved">
         <Button variant="outline" size="lg" fullWidth>
-          Route salvate
+          {t('home.cta_saved')}
         </Button>
       </Link>
       {openInstallModal && (
@@ -44,7 +46,7 @@ export function HomeContent() {
           fullWidth
           onClick={openInstallModal}
         >
-          Installa app
+          {t('home.cta_install')}
         </Button>
       )}
     </div>

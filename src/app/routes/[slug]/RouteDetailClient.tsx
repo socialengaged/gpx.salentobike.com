@@ -28,7 +28,8 @@ interface RouteDetailClientProps {
   renderMap?: (
     userPosition: { lat: number; lng: number; accuracy?: number } | null,
     mapState?: MapState | null,
-    showComuni?: boolean
+    showComuni?: boolean,
+    showFontane?: boolean
   ) => React.ReactNode;
   renderStats?: React.ReactNode;
 }
@@ -63,6 +64,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
   const [recording, setRecording] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [showComuni, setShowComuni] = useState(true);
+  const [showFontane, setShowFontane] = useState(true);
   const [showComuniSearch, setShowComuniSearch] = useState(false);
   const isOffline = useOfflineStatus();
   const { state: gpsState, offRoute, position, progressFraction } = useGpsTracking(route, tracking);
@@ -121,7 +123,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
 
   return (
     <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
-      {renderMap?.(userPosition, mapState, showComuni)}
+      {renderMap?.(userPosition, mapState, showComuni, showFontane)}
       {tracking && offRoute && (
         <div className="flex-shrink-0 px-4 py-2 bg-amber-100 text-amber-800 text-sm text-center">
           Possibile fuori percorso
@@ -214,6 +216,15 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   }`}
                 >
                   {showComuniSearch ? 'Cerca comuni ▼' : 'Cerca comuni ▶'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFontane((s) => !s)}
+                  className={`px-3 py-2 min-h-[40px] rounded-full text-base font-medium transition-colors ${
+                    showFontane ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {showFontane ? 'Fontane attive' : 'Fontane disattive'}
                 </button>
                 <Chip variant={isOffline ? 'warning' : 'success'}>
                   {isOffline ? 'Offline' : 'Online'}

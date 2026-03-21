@@ -41,13 +41,14 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
       splitRoutes={splitRoutes}
       onSplitRoutesChange={setSplitRoutes}
       onSplitResult={handleSplitResult}
-      renderMap={(userPosition, mapState, showComuni = true) => (
+      renderMap={(userPosition, mapState, showComuni = true, showFontane = true) => (
         <div className="flex-1 min-h-0 min-h-[200px] relative w-full overflow-hidden">
           <RouteMap
             route={route}
             userPosition={userPosition}
             className="absolute inset-0"
             showComuni={showComuni}
+            showFontane={showFontane}
           >
             {mapState && (
               <MapControls

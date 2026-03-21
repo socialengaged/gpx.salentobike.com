@@ -58,4 +58,4 @@ cd C:\Users\info\Desktop\salentogpx\deploy
 ## Note
 
 - Certificato SSL scade 2026-06-18 (rinnovo automatico via certbot)
-- Chiave SSH: `C:\Users\info\Desktop\ssh ORACLE\ssh-key-2026-01-02.key`
+- Chiave SSH: `%USERPROFILE%\.ssh\ssh-key-2026-01-02.key` (OVH, spostata in `.ssh`)

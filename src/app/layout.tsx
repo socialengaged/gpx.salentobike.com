@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { MobileShell } from '@/components/layout/MobileShell';
+import type { Locale } from '@/i18n/types';
+import { LOCALE_COOKIE } from '@/i18n/types';
 import './globals.css';
 
 const geistSans = Geist({
@@ -34,14 +37,18 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale: Locale =
+    cookieStore.get(LOCALE_COOKIE)?.value === 'en' ? 'en' : 'it';
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="h-full min-h-full font-sans text-slate-900">

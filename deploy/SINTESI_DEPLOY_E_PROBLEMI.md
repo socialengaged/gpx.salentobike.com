@@ -25,7 +25,7 @@
    - Copia servizio systemd, restart
    - Configura Nginx: HTTPS se cert esiste, altrimenti HTTP-only
 
-3. **Chiave SSH**: `C:\Users\info\Desktop\ssh ORACLE\ssh-key-2026-01-02.key`
+3. **Chiave SSH OVH**: `%USERPROFILE%\.ssh\ssh-key-2026-01-02.key` (es. `C:\Users\info\.ssh\ssh-key-2026-01-02.key`) — spostata in `.ssh` rispetto al vecchio path `Desktop\ssh ORACLE\`
 
 4. **Verifica post-deploy**:
    - https://gpx.salentobike.com (deve mostrare "Salento Bike Routes")
@@ -40,11 +40,12 @@
 **Causa**: La config Nginx per gpx.salentobike.com era HTTP-only (porta 80). Le richieste HTTPS (porta 443) venivano gestite dal *default server* di Nginx, che puntava a un’altra app sullo stesso server.
 
 **Fix**:
+```powershell
+# Da Windows PowerShell — SSH sul server (chiave in %USERPROFILE%\.ssh\)
+ssh -i "$env:USERPROFILE\.ssh\ssh-key-2026-01-02.key" ubuntu@57.131.16.162
+```
+Sul server (bash):
 ```bash
-# SSH sul server
-ssh -i "C:\Users\info\Desktop\ssh ORACLE\ssh-key-2026-01-02.key" ubuntu@57.131.16.162
-
-# Applica config HTTPS (il cert esiste in /etc/letsencrypt/live/gpx.salentobike.com)
 sudo cp /home/ubuntu/apps/salentogpx/deploy/gpx.salentobike.com.nginx.conf /etc/nginx/sites-available/gpx-salentobike
 sudo nginx -t
 sudo systemctl reload nginx
@@ -131,23 +132,22 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-21 | i18n IT/EN (cookie `sb_locale`, switch header, `html lang`), sintesi comuni unificata (`summaryLabels` + popup mappa), testi home/nav; leggibilità mobile su QuickSummary e popup comuni |
 | 2026-03-20 | Fix mappa tagliata in produzione: layout flex (h-dvh, min-h-0), resize MapLibre ritardato |
 | 2026-03-20 | Label "Installa app" → "Install app" (HomeContent, AppHeader, InstallBanner, InstallModal) |
 | 2026-03-20 | Setup Git: init, primo commit. Per push: creare repo su GitHub/GitLab, poi `git remote add origin <url>` e `git push -u origin master` |
 | 2026-03-20 | Integrazione comuni Puglia: script build-comuni (regione Puglia), ComuniLayer, geocoding Nominatim |
 | 2026-03-20 | App tutta in italiano; label "Installa app" |
 | 2026-03-20 | UI mobile: titoli/stats più grandi, grid 2 col su telefono, pill comuni touch-friendly |
-| 2026-03-20 | Password sito: cookie `site_auth`, password `salentoFriends`, pagina `/accesso`, API `/api/site-login` |
+| 2026-03-20 | ~~Password sito~~ (rimossa 2026-03-21: sito pubblico senza login) |
 | 2026-03-20 | Performance comuni: `comuni-puglia-lite.json` (~25KB) + layer MapLibre GeoJSON (cerchi GPU) al posto di 271 marker DOM |
 
 ---
 
-## Password accesso sito (2026-03-20)
+## Accesso sito (aggiornato 2026-03-21)
 
-- **Password**: `salentoFriends` (definita in `src/lib/site-auth.ts`)
-- **Flusso**: senza cookie valido → redirect a `/accesso` → POST `/api/site-login` → cookie httpOnly 30 giorni
-- **Admin** (`/admin`): richiede sia accesso sito sia login admin (`social123`)
-- **Asset pubblici** (senza password): `_next/static`, `/data/`, `/mappe/`, `/icons/`, file con estensione (manifest, sw, immagini)
+- **Sito pubblico**: nessuna password; `/accesso` reindirizza a `/` (`next.config.ts`).
+- **Admin** (`/admin`): solo login admin (cookie `admin_auth`, password in `middleware.ts`).
 
 ---
 
@@ -163,4 +163,4 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-20 (mobile, password sito, comuni GPU)*
+*Ultimo aggiornamento: 2026-03-21 (i18n IT/EN + sintesi comuni unificata)*

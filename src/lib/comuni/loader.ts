@@ -19,3 +19,4 @@ export async function getComuneBySlug(slug: string): Promise<Comune | null> {
   const all = await getComuniSalento();
   return all.find((c) => c.slug === slug) ?? null;
 }
+
