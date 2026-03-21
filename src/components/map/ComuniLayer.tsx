@@ -91,7 +91,7 @@ export function ComuniLayer() {
       );
 
       popupRef.current?.remove();
-      const popup = new maplibregl.Popup({ offset: 12, maxWidth: 'min(320px, 90vw)' });
+      const popup = new maplibregl.Popup({ offset: 12, maxWidth: '320px' });
       popupRef.current = popup;
 
       const onClick = async (e: MapLayerMouseEvent) => {
