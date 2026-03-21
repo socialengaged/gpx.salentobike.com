@@ -17,63 +17,35 @@ function escapeHtml(s: string): string {
   return div.innerHTML;
 }
 
-type ListRow = { label: string; value: number; hint: string };
+const CHIP =
+  'display:inline-flex;align-items:center;border-radius:4px;padding:2px 6px;background:#f1f5f9;font-size:13px;font-weight:600;color:#0f172a;margin:2px';
 
-function buildListRows(c: ComuneLite, L: SummaryLabels): ListRow[] {
-  const rows: ListRow[] = [];
-  if (c.txt_spec > 0)
-    rows.push({ label: L.rowSpec, value: c.txt_spec, hint: L.hintSpec });
-  if (c.txt_attr > 0)
-    rows.push({ label: L.rowAttr, value: c.txt_attr, hint: L.hintAttr });
-  const add = (label: string, v: number | null | undefined) => {
-    if (v != null && v > 0) rows.push({ label, value: v, hint: L.hintOsm });
-  };
-  add(L.rowFontane, c.poi_fontane);
-  add(L.rowRistoranti, c.poi_ristoranti);
-  add(L.rowFarmacie, c.poi_farmacie);
-  add(L.rowOspedali, c.poi_ospedali);
-  add(L.rowBici, c.poi_bici);
-  return rows;
-}
-
+/** Compact cyclist-friendly popup: emoji + count only, ~100px height. */
 function buildPopupHtml(c: ComuneLite, L: SummaryLabels): string {
-  const badgeBase =
-    'display:inline-flex;align-items:center;gap:3px;border-radius:6px;padding:2px 7px;font-size:12px;font-weight:500';
-  const badges: string[] = [];
-  if (c.hasRist)
-    badges.push(
-      `<span style="${badgeBase};background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">${escapeHtml(L.cuisineBadge)}</span>`,
-    );
-  if (c.hasAttr)
-    badges.push(
-      `<span style="${badgeBase};background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe">${escapeHtml(L.attractionsBadge)}</span>`,
-    );
+  const chips: string[] = [];
+  const add = (emoji: string, n: number | null | undefined) => {
+    if (n != null && n > 0) chips.push(`<span style="${CHIP}">${emoji}${n}</span>`);
+  };
+  add('🚰', c.poi_fontane);
+  add('🍴', c.poi_ristoranti);
+  add('💊', c.poi_farmacie);
+  add('🏥', c.poi_ospedali);
+  add('🔧', c.poi_bici);
+  add('🏛️', c.txt_attr);
+  add('📋', c.txt_spec);
 
-  const listRows = buildListRows(c, L);
-  const listHtml =
-    listRows.length > 0
-      ? `<ul style="margin:0 0 10px;padding:0;list-style:none;font-size:14px;line-height:1.35;max-height:min(38vh,220px);overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc">
-${listRows
-  .map(
-    (r) =>
-      `<li style="display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid #e2e8f0;align-items:baseline">
-  <span style="color:#334155">${escapeHtml(r.label)}</span>
-  <span style="font-weight:600;color:#0f172a;white-space:nowrap">${r.value} <span style="font-weight:400;color:#64748b;font-size:12px">(${escapeHtml(r.hint)})</span></span>
-</li>`,
-  )
-  .join('')}
-</ul>`
-      : `<p style="margin:0 0 10px;font-size:14px;color:#64748b">${escapeHtml(L.noData)}</p>`;
+  const chipsRow =
+    chips.length > 0
+      ? `<div style="display:flex;flex-wrap:wrap;gap:2px;margin:6px 0 0;line-height:1.3">${chips.join('')}</div>`
+      : `<p style="margin:6px 0 0;font-size:12px;color:#64748b">${escapeHtml(L.noData)}</p>`;
 
-  return `<div style="padding:10px 12px;max-width:300px;font-family:system-ui,sans-serif">
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
-      <span style="font-weight:700;font-size:15px;color:#0f172a">${escapeHtml(c.nome)}</span>
+  return `<div style="padding:8px 10px;max-width:260px;font-family:system-ui,sans-serif">
+    <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
+      <span style="font-weight:700;font-size:15px;color:#0f172a;line-height:1.2">${escapeHtml(c.nome)}</span>
       <span style="background:#f1f5f9;color:#64748b;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600">${escapeHtml(c.prov)}</span>
     </div>
-    ${badges.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${badges.join('')}</div>` : ''}
-    <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:0.03em">${escapeHtml(L.whatIsHere)}</p>
-    ${listHtml}
-    <a href="/comuni/${escapeHtml(c.slug)}" style="display:inline-flex;align-items:center;gap:4px;background:#0ea5e9;color:#fff;border-radius:6px;padding:6px 14px;font-size:14px;font-weight:600;text-decoration:none">${escapeHtml(L.fullCard)}</a>
+    ${chipsRow}
+    <a href="/comuni/${escapeHtml(c.slug)}" style="display:block;margin-top:8px;padding-top:6px;border-top:1px solid #e2e8f0;color:#0284c7;font-size:13px;font-weight:600;text-decoration:none">${escapeHtml(L.popupMore)}</a>
   </div>`;
 }
 
@@ -143,7 +115,7 @@ export function ComuniLayer() {
       );
 
       popupRef.current?.remove();
-      const popup = new maplibregl.Popup({ offset: 12, maxWidth: '320px', closeButton: true });
+      const popup = new maplibregl.Popup({ offset: 12, maxWidth: '260px', closeButton: true });
       popupRef.current = popup;
 
       const onClick = (e: MapLayerMouseEvent) => {

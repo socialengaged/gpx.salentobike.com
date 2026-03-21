@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import type { MapLayerMouseEvent } from 'maplibre-gl';
 import { useMapContext } from './MapContext';
+import { useLocale } from '@/i18n/useLocale';
 
 const SOURCE_ID = 'fontane-puglia';
 const LAYER_ID = 'fontane-puglia-circles';
@@ -14,6 +15,7 @@ function escapeHtml(s: string): string {
 }
 
 export function FontaneLayer() {
+  const { t } = useLocale();
   const { map, mapReady } = useMapContext();
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const handlersRef = useRef<{
@@ -72,13 +74,15 @@ export function FontaneLayer() {
       const popup = new maplibregl.Popup({ offset: 10, maxWidth: '260px', closeButton: true });
       popupRef.current = popup;
 
+      const title = t('map.fontane_public');
+
       const onClick = (e: MapLayerMouseEvent) => {
         const lat = e.features?.[0]?.properties?.lat as number | undefined;
         const lon = e.features?.[0]?.properties?.lon as number | undefined;
         if (lat == null || lon == null) return;
-        const html = `<div class="p-3 text-sm text-slate-700">
-          <p class="font-semibold text-slate-900">Fontana pubblica</p>
-          <p class="mt-1 text-xs text-slate-500">${escapeHtml(lat.toFixed(5))}, ${escapeHtml(lon.toFixed(5))}</p>
+        const html = `<div style="padding:8px 10px;font-family:system-ui,sans-serif;max-width:260px">
+          <p style="margin:0;font-weight:600;font-size:14px;color:#0f172a">${escapeHtml(title)}</p>
+          <p style="margin:6px 0 0;font-size:11px;color:#64748b">${escapeHtml(lat.toFixed(5))}, ${escapeHtml(lon.toFixed(5))}</p>
         </div>`;
         popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
       };
@@ -113,7 +117,7 @@ export function FontaneLayer() {
       if (map?.getLayer(LAYER_ID)) map.removeLayer(LAYER_ID);
       if (map?.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
     };
-  }, [map, mapReady]);
+  }, [map, mapReady, t]);
 
   return null;
 }

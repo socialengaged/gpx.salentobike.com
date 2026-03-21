@@ -133,6 +133,7 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-21 | **Popup mappa comuni**: scheda compatta (emoji + conteggi, link «Approfondisci») per evitare taglio sotto la mappa su mobile; `map.fontane_public` i18n per popup fontane |
 | 2026-03-21 | **PWA install**: icone PNG reali 192/512 (prima 1×1 → Chrome non dava `beforeinstallprompt`); SW registrato subito (non a `load`); script `beforeInteractive` per catturare BIP; modal/banner install con guide Chrome / Firefox / Safari + i18n; manifest con icone `any`+`maskable`; `metadata.icons` per Apple |
 | 2026-03-21 | i18n IT/EN (cookie `sb_locale`, switch header, `html lang`), sintesi comuni unificata (`summaryLabels` + popup mappa), testi home/nav; leggibilità mobile su QuickSummary e popup comuni |
 | 2026-03-20 | Fix mappa tagliata in produzione: layout flex (h-dvh, min-h-0), resize MapLibre ritardato |

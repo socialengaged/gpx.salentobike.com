@@ -9,6 +9,8 @@ export type SummaryLabels = {
   attractionsBadge: string;
   whatIsHere: string;
   fullCard: string;
+  /** Compact map popup CTA only */
+  popupMore: string;
   noData: string;
   rowSpec: string;
   rowAttr: string;
@@ -31,6 +33,7 @@ export function getSummaryLabels(locale: Locale): SummaryLabels {
     attractionsBadge: m['comune.attractions_badge'],
     whatIsHere: m['comune.what_is_here'],
     fullCard: m['comune.full_card'],
+    popupMore: m['comune.popup_more'],
     noData: m['comune.no_data'],
     rowSpec: m['comune.row.spec'],
     rowAttr: m['comune.row.attr'],
