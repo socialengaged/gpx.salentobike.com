@@ -133,6 +133,7 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-21 | **Mobile UX Overhaul**: BottomNav 4 tab (Home/Route/Salvate/Installa); hero gradient home; route cards con bordo difficolta e icone stats; Avvia route sempre visibile; contatto WhatsApp (wa.me/393204864478); footer Made with love by SalentoBike; scrollbar nascosti su mobile; saved page i18n; fix Part 2 |
 | 2026-03-21 | **Popup mappa comuni**: scheda compatta (emoji + conteggi, link «Approfondisci») per evitare taglio sotto la mappa su mobile; `map.fontane_public` i18n per popup fontane |
 | 2026-03-21 | **PWA install**: icone PNG reali 192/512 (prima 1×1 → Chrome non dava `beforeinstallprompt`); SW registrato subito (non a `load`); script `beforeInteractive` per catturare BIP; modal/banner install con guide Chrome / Firefox / Safari + i18n; manifest con icone `any`+`maskable`; `metadata.icons` per Apple |
 | 2026-03-21 | i18n IT/EN (cookie `sb_locale`, switch header, `html lang`), sintesi comuni unificata (`summaryLabels` + popup mappa), testi home/nav; leggibilità mobile su QuickSummary e popup comuni |
@@ -166,4 +167,4 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-21 (popup comuni compatto su mappa)*
+*Ultimo aggiornamento: 2026-03-21 (mobile UX overhaul: bottom nav, hero, WhatsApp, footer)*
