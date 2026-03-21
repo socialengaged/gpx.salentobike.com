@@ -34,8 +34,8 @@ interface RouteDetailClientProps {
   renderStats?: React.ReactNode;
 }
 
-const CONTACT_URL = 'tel:+393331234567';
-const CONTACT_LABEL = 'Contatta Salento Bike';
+const CONTACT_URL = 'https://wa.me/393204864478';
+const CONTACT_LABEL = 'Contatta su WhatsApp';
 
 function gpsStateToChip(state: string): { label: string; variant: 'default' | 'success' | 'warning' | 'error' } {
   switch (state) {
@@ -149,7 +149,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
           </svg>
         </button>
         {!panelCollapsed && (
-          <div className="p-5 space-y-4 overflow-y-auto max-h-[40vh]">
+          <div className="p-5 space-y-4 overflow-y-auto max-h-[35vh]">
             {tracking && (
               <div className="flex justify-between items-center text-sm">
                 <span className="text-slate-600">
@@ -184,7 +184,7 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                   size="md"
                   onClick={() => onRouteChange?.(splitRoutes[1])}
                 >
-                  Part 2
+                  Parte 2
                 </Button>
                 <Button
                   variant="ghost"
@@ -245,16 +245,8 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
               </div>
               <div className="flex flex-col gap-3">
                 <Button
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  onClick={handleStartRoute}
-                >
-                  {tracking ? 'Ferma tracking' : 'Avvia route'}
-                </Button>
-                <Button
                   variant="outline"
-                  size="lg"
+                  size="md"
                   fullWidth
                   onClick={handleSaveOffline}
                   disabled={saved}
@@ -263,14 +255,14 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
                 </Button>
                 <Button
                   variant="outline"
-                  size="lg"
+                  size="md"
                   fullWidth
                   onClick={handleRecordToggle}
                 >
                   {recording ? 'Ferma e esporta registrazione' : 'Registra traccia'}
                 </Button>
-                <a href={CONTACT_URL}>
-                  <Button variant="ghost" size="lg" fullWidth>
+                <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer">
+                  <Button variant="ghost" size="md" fullWidth>
                     {CONTACT_LABEL}
                   </Button>
                 </a>
@@ -278,18 +270,16 @@ export function RouteDetailClient({ route, onRouteChange, splitRoutes, onSplitRo
             </div>
           </div>
         )}
-        {panelCollapsed && (
-          <div className="px-5 pb-5">
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              onClick={handleStartRoute}
-            >
-              {tracking ? 'Ferma tracking' : 'Avvia route'}
-            </Button>
-          </div>
-        )}
+        <div className="px-5 pb-4 pt-2 border-t border-slate-100">
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            onClick={handleStartRoute}
+          >
+            {tracking ? 'Ferma tracking' : 'Avvia route'}
+          </Button>
+        </div>
       </div>
     </div>
   );

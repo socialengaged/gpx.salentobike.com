@@ -166,4 +166,4 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-21 (PWA install Chrome/Firefox/Safari + icone reali)*
+*Ultimo aggiornamento: 2026-03-21 (popup comuni compatto su mappa)*

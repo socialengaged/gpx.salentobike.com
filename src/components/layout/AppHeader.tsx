@@ -19,6 +19,17 @@ const navLinks: {
   { href: '/admin', msgKey: 'nav.admin', className: 'text-slate-400' },
 ];
 
+/** Mobile overflow menu: routes/saved/install live in BottomNav */
+const moreMenuLinks: {
+  href: string;
+  msgKey: string;
+  className?: string;
+  isInstall?: boolean;
+}[] = [
+  { href: '/admin', msgKey: 'nav.admin', className: 'text-slate-400' },
+  { href: '#', msgKey: 'nav.more_install', isInstall: true },
+];
+
 const linkClass =
   'text-slate-600 hover:text-slate-900 text-base font-medium min-h-[52px] flex items-center px-5 py-4';
 
@@ -105,7 +116,7 @@ export function AppHeader() {
           type="button"
           onClick={() => setMenuOpen(true)}
           className="sm:hidden ml-auto p-3 -mr-2 min-w-[52px] min-h-[52px] flex items-center justify-center text-slate-600 hover:text-slate-900"
-          aria-label="Apri menu"
+          aria-label={t('nav.more_menu')}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -118,21 +129,21 @@ export function AppHeader() {
         createPortal(
           <div className="fixed inset-0 z-[99999] sm:hidden flex flex-col bg-white">
             <div className="flex items-center justify-between h-16 px-4 border-b border-slate-200 shrink-0 safe-area-padding">
-              <span className="font-semibold text-xl text-slate-900">Menu</span>
+              <span className="font-semibold text-xl text-slate-900">{t('nav.more_menu')}</span>
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
                 className="p-3 -mr-2 min-w-[52px] min-h-[52px] flex items-center justify-center text-slate-500 hover:text-slate-900 text-3xl leading-none"
-                aria-label="Chiudi menu"
+                aria-label={t('nav.close')}
               >
                 ×
               </button>
             </div>
             <nav className="flex flex-col flex-1 overflow-auto py-4">
-              {navLinks.map(({ href, msgKey, className, isInstall }) =>
+              {moreMenuLinks.map(({ href, msgKey, className, isInstall }) =>
                 isInstall && openInstallModal ? (
                   <button
-                    key="install"
+                    key="more-install"
                     type="button"
                     onClick={() => {
                       openInstallModal();

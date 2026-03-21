@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { AppHeader } from './AppHeader';
+import { BottomNav } from './BottomNav';
 import { InstallBanner } from '@/components/ui/InstallBanner';
 import { OfflineBanner } from '@/components/ui/OfflineBanner';
 import { InstallProvider } from '@/lib/pwa/InstallContext';
@@ -24,7 +25,10 @@ export function MobileShell({ children }: MobileShellProps) {
           <AppHeader />
           <InstallBanner />
           <OfflineBanner />
-          <main className="flex-1 min-h-0 flex flex-col overflow-hidden">{children}</main>
+          <main className="flex-1 min-h-0 flex flex-col overflow-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] sm:pb-0">
+            {children}
+          </main>
+          <BottomNav />
         </div>
       </InstallProvider>
     </LocaleProvider>
