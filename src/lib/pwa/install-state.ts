@@ -1,8 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-export type InstallBrowserType = 'chrome' | 'firefox' | 'safari-ios' | 'safari-desktop' | 'other';
+export type InstallBrowserType =
+  | 'chrome-android'
+  | 'chrome-desktop'
+  | 'chrome-ios'
+  | 'firefox'
+  | 'firefox-ios'
+  | 'safari-ios'
+  | 'safari-desktop'
+  | 'other';
 
 export function useIsIos(): boolean {
   const [ios, setIos] = useState(false);
@@ -10,7 +18,7 @@ export function useIsIos(): boolean {
     if (typeof navigator === 'undefined') return;
     setIos(
       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
     );
   }, []);
   return ios;
@@ -38,41 +46,69 @@ export function useIsInstalled(): boolean {
   return installed;
 }
 
-export function useCanInstall(): { canInstall: boolean; prompt: (() => Promise<void>) | null } {
+/** Chrome/Edge/Samsung (Chromium) install prompt — captured early via inline script + sync here. */
+export function useCanInstall(): {
+  canInstall: boolean;
+  prompt: (() => Promise<void>) | null;
+} {
   const [state, setState] = useState<{
     canInstall: boolean;
     prompt: (() => Promise<void>) | null;
   }>({ canInstall: false, prompt: null });
 
+  const syncFromDeferred = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const w = window as Window & { __salentoBip?: BeforeInstallPromptEvent | null };
+    const e = w.__salentoBip;
+    if (!e) return;
+
+    setState({
+      canInstall: true,
+      prompt: () => {
+        const ev = w.__salentoBip;
+        if (!ev) return Promise.resolve();
+        return ev.prompt().then(() => {
+          w.__salentoBip = null;
+          setState({ canInstall: false, prompt: null });
+        });
+      },
+    });
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const handler = (e: BeforeInstallPromptEvent) => {
-      e.preventDefault();
-      setState({
-        canInstall: true,
-        prompt: () =>
-          e.prompt().then(() => {
-            setState({ canInstall: false, prompt: null });
-          }),
-      });
-    };
+    const onStored = () => syncFromDeferred();
 
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+    window.addEventListener('salento-bip-stored', onStored);
+    syncFromDeferred();
+
+    return () => {
+      window.removeEventListener('salento-bip-stored', onStored);
+    };
+  }, [syncFromDeferred]);
 
   return state;
 }
 
-function detectBrowser(): InstallBrowserType {
+export function detectBrowser(): InstallBrowserType {
   if (typeof navigator === 'undefined') return 'other';
   const ua = navigator.userAgent;
-  const isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isIos) return 'safari-ios';
-  if (/Firefox|FxiOS/.test(ua)) return 'firefox';
-  if (/Safari/.test(ua) && !/Chrome|Chromium/.test(ua)) return 'safari-desktop';
-  if (/Chrome|Chromium|Edg/.test(ua)) return 'chrome';
+  const isIos =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (isIos) {
+    if (/CriOS/.test(ua)) return 'chrome-ios';
+    if (/FxiOS/.test(ua)) return 'firefox-ios';
+    return 'safari-ios';
+  }
+  if (/Firefox/i.test(ua)) return 'firefox';
+  if (/Chrome|Chromium|Edg/i.test(ua)) {
+    if (/Android/i.test(ua)) return 'chrome-android';
+    return 'chrome-desktop';
+  }
+  if (/Safari/i.test(ua) && !/Chrome|Chromium|Edg/i.test(ua)) return 'safari-desktop';
   return 'other';
 }
 
@@ -95,8 +131,12 @@ export function useInstallFlow(): InstallFlowState {
   const canShowInstall =
     canUsePrompt ||
     browser === 'safari-ios' ||
+    browser === 'chrome-ios' ||
+    browser === 'firefox-ios' ||
     browser === 'firefox' ||
     browser === 'safari-desktop' ||
+    browser === 'chrome-android' ||
+    browser === 'chrome-desktop' ||
     browser === 'other';
 
   return {
@@ -111,9 +151,13 @@ declare global {
   interface WindowEventMap {
     beforeinstallprompt: BeforeInstallPromptEvent;
   }
+  interface Window {
+    __salentoBip?: BeforeInstallPromptEvent | null;
+  }
 }
 
-interface BeforeInstallPromptEvent extends Event {
+/** Chromium PWA install event (not in all TS DOM libs). */
+export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }

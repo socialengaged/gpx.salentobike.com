@@ -1,27 +1,39 @@
 #!/usr/bin/env node
 /**
- * Generates placeholder PWA icons.
- * Replace with real Salento Bike branding before production.
+ * Generates valid PNG icons at 192×192 and 512×512 (Salento Bike sky blue).
+ * Chrome requires real pixel dimensions for PWA installability — 1×1 placeholders break beforeinstallprompt.
  */
 import { writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { PNG } from 'pngjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const iconsDir = path.join(__dirname, '..', 'public', 'icons');
 
 mkdirSync(iconsDir, { recursive: true });
 
-// Minimal valid 1x1 PNG (transparent)
-const minimalPng = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
+/** Theme sky-500 #0ea5e9 */
+function fillSky(png) {
+  const { width, height, data } = png;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (width * y + x) << 2;
+      data[idx] = 14;
+      data[idx + 1] = 165;
+      data[idx + 2] = 233;
+      data[idx + 3] = 255;
+    }
+  }
+}
 
-// For 192 and 512 we use the same minimal PNG - browsers will scale
-// In production, replace with proper branded icons
-writeFileSync(path.join(iconsDir, 'icon-192.png'), minimalPng);
-writeFileSync(path.join(iconsDir, 'icon-512.png'), minimalPng);
+function writeIcon(size, filename) {
+  const png = new PNG({ width: size, height: size });
+  fillSky(png);
+  const buf = PNG.sync.write(png);
+  writeFileSync(path.join(iconsDir, filename), buf);
+  console.log(`Wrote ${filename} (${size}×${size})`);
+}
 
-console.log('Placeholder icons generated in public/icons/');
-console.log('Replace with branded 192x192 and 512x512 PNGs before production.');
+writeIcon(192, 'icon-192.png');
+writeIcon(512, 'icon-512.png');

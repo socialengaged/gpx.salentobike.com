@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { MobileShell } from '@/components/layout/MobileShell';
@@ -22,6 +23,10 @@ export const metadata: Metadata = {
   title: 'Salento Bike Routes',
   description: 'Route in bici per il Salento - visualizza, salva e segui le route offline',
   manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+    apple: [{ url: '/icons/icon-192.png', sizes: '180x180', type: 'image/png' }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -52,6 +57,19 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="h-full min-h-full font-sans text-slate-900">
+        <Script id="salento-pwa-bip" strategy="beforeInteractive">
+          {`
+(function(){
+  if (typeof window === 'undefined') return;
+  window.__salentoBip = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    window.__salentoBip = e;
+    window.dispatchEvent(new Event('salento-bip-stored'));
+  });
+})();
+`}
+        </Script>
         <MobileShell>{children}</MobileShell>
       </body>
     </html>

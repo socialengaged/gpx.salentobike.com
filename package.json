@@ -33,6 +33,7 @@
     "csv-parse": "^6.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
+    "pngjs": "^7.0.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "workbox-build": "^7.4.0",
