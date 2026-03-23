@@ -37,7 +37,7 @@ export function ComuneBottomCard({ comune, onClose }: ComuneBottomCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2 flex-wrap">
               <h3 className="font-bold text-base text-slate-900 leading-tight">{comune.nome}</h3>
-              <span className="shrink-0 bg-slate-100 text-slate-600 rounded px-1.5 py-0.5 text-[11px] font-semibold">
+              <span className="shrink-0 bg-slate-100 text-slate-600 rounded px-1.5 py-0.5 text-xs font-semibold">
                 {comune.prov}
               </span>
             </div>

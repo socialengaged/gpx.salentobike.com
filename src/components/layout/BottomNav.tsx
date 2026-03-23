@@ -6,7 +6,7 @@ import { useLocale } from '@/i18n/useLocale';
 import { useInstallModal } from '@/lib/pwa/InstallContext';
 
 const tabClass = (active: boolean) =>
-  `flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[56px] px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] text-[10px] font-medium transition-colors touch-manipulation ${
+  `flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[56px] px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] text-xs font-medium leading-tight transition-colors touch-manipulation ${
     active ? 'text-sky-600' : 'text-slate-500 hover:text-slate-800'
   }`;
 

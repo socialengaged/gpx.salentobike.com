@@ -97,7 +97,7 @@ export function ComuniLayer({ selectedSlug = null, onComuneSelect }: ComuniLayer
           minzoom: 11,
           layout: {
             'text-field': ['get', 'nome'],
-            'text-size': 12,
+            'text-size': 14,
             'text-offset': [0, 1.5],
             'text-anchor': 'top',
             'text-max-width': 14,

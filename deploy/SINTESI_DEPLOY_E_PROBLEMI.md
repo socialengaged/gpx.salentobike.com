@@ -133,6 +133,7 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-24 | **Leggibilità mobile (tipografia)**: `html` root **20px** (≤1023px) per scalare tutti i `rem` Tailwind; `body` `1rem` + `line-height` 1.55; `BottomNav` etichette `text-xs` al posto di 10px fissi; popup fontane e label comuni mappa leggermente più grandi |
 | 2026-03-21 | **Mobile Map UX**: comuni/fontane marker zoom-adattivi + hit-area tappabile; etichette nome comune (zoom ≥11); `ComuneBottomCard` in basso al posto del popup MapLibre; selezione colore + `flyTo`; fontane colore cyan distinto; i18n pannello route + `RouteTools`/`RouteElevationStats`; toggle layer a icone; sezione Avanzate (default chiusa) con cerca comuni e strumenti GPX |
 | 2026-03-21 | **Mobile UX Overhaul**: BottomNav 4 tab (Home/Route/Salvate/Installa); hero gradient home; route cards con bordo difficolta e icone stats; Avvia route sempre visibile; contatto WhatsApp (wa.me/393204864478); footer Made with love by SalentoBike; scrollbar nascosti su mobile; saved page i18n; fix Part 2 |
 | 2026-03-21 | **Popup mappa comuni**: scheda compatta (emoji + conteggi, link «Approfondisci») per evitare taglio sotto la mappa su mobile; `map.fontane_public` i18n per popup fontane |
@@ -168,4 +169,4 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-21 (mobile map UX: marker, bottom card comuni, i18n route panel)*
+*Ultimo aggiornamento: 2026-03-24 (tipografia mobile + deploy)*

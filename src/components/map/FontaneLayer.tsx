@@ -106,9 +106,9 @@ export function FontaneLayer() {
         const lat = e.features?.[0]?.properties?.lat as number | undefined;
         const lon = e.features?.[0]?.properties?.lon as number | undefined;
         if (lat == null || lon == null) return;
-        const html = `<div style="padding:8px 10px;font-family:system-ui,sans-serif;max-width:260px">
-          <p style="margin:0;font-weight:600;font-size:14px;color:#0f172a">${escapeHtml(title)}</p>
-          <p style="margin:6px 0 0;font-size:11px;color:#64748b">${escapeHtml(lat.toFixed(5))}, ${escapeHtml(lon.toFixed(5))}</p>
+        const html = `<div style="padding:10px 12px;font-family:system-ui,sans-serif;max-width:280px">
+          <p style="margin:0;font-weight:600;font-size:16px;line-height:1.3;color:#0f172a">${escapeHtml(title)}</p>
+          <p style="margin:8px 0 0;font-size:13px;line-height:1.35;color:#64748b">${escapeHtml(lat.toFixed(5))}, ${escapeHtml(lon.toFixed(5))}</p>
         </div>`;
         popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
       };
