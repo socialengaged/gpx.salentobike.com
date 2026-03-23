@@ -43,29 +43,33 @@ export function ComuneBottomCard({ comune, onClose }: ComuneBottomCardProps) {
 
   return (
     <div
-      className="absolute left-0 right-0 bottom-0 z-20 px-3 pb-4 pt-3 pointer-events-auto safe-area-padding"
+      className="absolute left-0 right-0 bottom-0 z-20 px-3 pb-3 sm:pb-3 pt-2 sm:pt-2 pointer-events-auto safe-area-padding"
       role="dialog"
       aria-label={comune.nome}
     >
-      <div className="max-w-3xl w-full mx-auto rounded-3xl bg-white shadow-xl border border-slate-200 overflow-hidden">
-        <div className="px-5 pt-5 pb-2">
-          <div className="flex items-start gap-3">
+      <div className="w-full max-w-lg sm:max-w-md mx-auto rounded-2xl bg-white shadow-lg border border-slate-200 overflow-hidden">
+        <div className="px-4 pt-4 sm:pt-3 pb-2">
+          <div className="flex items-start gap-2 sm:gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">
+              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500 mb-0.5 sm:mb-1">
                 {t('comune.map_card_municipality')}
               </p>
               <div className="flex items-baseline gap-2 flex-wrap gap-y-1">
-                <h3 className="font-bold text-2xl sm:text-3xl text-slate-900 leading-tight">{comune.nome}</h3>
-                <span className="shrink-0 bg-slate-100 text-slate-700 rounded-lg px-2 py-1 text-sm font-semibold">
+                <h3 className="font-bold text-xl sm:text-lg md:text-xl text-slate-900 leading-tight">
+                  {comune.nome}
+                </h3>
+                <span className="shrink-0 bg-slate-100 text-slate-700 rounded-md sm:rounded-lg px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs sm:text-sm font-semibold">
                   {comune.prov}
                 </span>
               </div>
-              <p className="text-base text-slate-600 mt-2 font-medium">{L.whatIsHere}</p>
+              <p className="text-sm sm:text-xs text-slate-600 mt-1.5 sm:mt-1 font-medium leading-snug">
+                {L.whatIsHere}
+              </p>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="shrink-0 w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 text-2xl leading-none"
+              className="shrink-0 w-12 h-12 sm:w-10 sm:h-10 min-w-[44px] min-h-[44px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 text-2xl sm:text-xl leading-none"
               aria-label={t('nav.close')}
             >
               ×
@@ -73,39 +77,41 @@ export function ComuneBottomCard({ comune, onClose }: ComuneBottomCardProps) {
           </div>
         </div>
 
-        <div className="px-5 pb-4 max-h-[min(50vh,420px)] overflow-y-auto">
+        <div className="px-4 pb-3 max-h-[min(40vh,320px)] sm:max-h-[min(24vh,220px)] overflow-y-auto">
           {rows.length > 0 ? (
-            <ul className="space-y-0 rounded-2xl bg-slate-50 border border-slate-100 divide-y divide-slate-200/80">
+            <ul className="space-y-0 rounded-xl sm:rounded-lg bg-slate-50 border border-slate-100 divide-y divide-slate-200/80">
               {rows.map((r) => (
                 <li
                   key={r.label + r.emoji}
-                  className="flex items-center gap-3 px-4 py-3.5 min-h-[56px] first:rounded-t-2xl last:rounded-b-2xl"
+                  className="flex items-center gap-2 sm:gap-3 px-3 sm:px-3 py-3 min-h-[48px] sm:min-h-[44px] sm:py-2 first:rounded-t-xl sm:first:rounded-t-lg last:rounded-b-xl sm:last:rounded-b-lg"
                 >
-                  <span className="text-3xl shrink-0 w-12 text-center" aria-hidden>
+                  <span className="text-2xl sm:text-xl shrink-0 w-10 sm:w-9 text-center" aria-hidden>
                     {r.emoji}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-base sm:text-lg font-semibold text-slate-900 leading-snug">{r.label}</div>
+                    <div className="text-sm sm:text-base font-semibold text-slate-900 leading-snug">
+                      {r.label}
+                    </div>
                     {r.hint ? (
-                      <div className="text-xs text-slate-500 mt-0.5">{r.hint}</div>
+                      <div className="text-[11px] sm:text-xs text-slate-500 mt-0.5 leading-snug">{r.hint}</div>
                     ) : null}
                   </div>
-                  <span className="shrink-0 text-2xl sm:text-3xl font-bold tabular-nums text-sky-800">{r.n}</span>
+                  <span className="shrink-0 text-lg sm:text-xl font-bold tabular-nums text-sky-800">{r.n}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-base text-slate-600 py-4 px-2">{L.noData}</p>
+            <p className="text-sm sm:text-base text-slate-600 py-3 px-1">{L.noData}</p>
           )}
           {hasOsmCounts ? (
-            <p className="text-xs text-slate-500 mt-3 leading-relaxed">{L.summaryOsmNote}</p>
+            <p className="text-xs sm:text-[11px] text-slate-500 mt-2 sm:mt-1.5 leading-relaxed">{L.summaryOsmNote}</p>
           ) : null}
         </div>
 
-        <div className="px-5 pb-5 pt-1">
+        <div className="px-4 pb-4 sm:pb-3 pt-0.5">
           <Link
             href={`/comuni/${comune.slug}`}
-            className="flex w-full items-center justify-center text-center py-4 rounded-2xl bg-sky-600 text-white text-base font-semibold hover:bg-sky-700 transition-colors min-h-[52px]"
+            className="flex w-full items-center justify-center text-center py-3.5 sm:py-2.5 rounded-xl bg-sky-600 text-white text-sm sm:text-base font-semibold hover:bg-sky-700 transition-colors min-h-[48px] sm:min-h-[44px]"
           >
             {L.popupMore}
           </Link>
