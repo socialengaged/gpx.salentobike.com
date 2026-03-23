@@ -7,11 +7,22 @@ import { useLocale } from '@/i18n/useLocale';
 
 const SOURCE_ID = 'fontane-puglia';
 const LAYER_ID = 'fontane-puglia-circles';
+const HIT_LAYER_ID = 'fontane-puglia-hit';
 
 function escapeHtml(s: string): string {
   const div = document.createElement('div');
   div.textContent = s;
   return div.innerHTML;
+}
+
+/** Visible radius: zoom 7→3, 10→6, 13+→10 */
+function radiusInterpolate(): maplibregl.ExpressionSpecification {
+  return ['interpolate', ['linear'], ['zoom'], 7, 3, 10, 6, 13, 10];
+}
+
+/** Hit = visible + 8px */
+function hitRadiusInterpolate(): maplibregl.ExpressionSpecification {
+  return ['interpolate', ['linear'], ['zoom'], 7, 11, 10, 14, 13, 18];
 }
 
 export function FontaneLayer() {
@@ -60,11 +71,26 @@ export function FontaneLayer() {
           type: 'circle',
           source: SOURCE_ID,
           paint: {
-            'circle-radius': 5,
-            'circle-color': '#38bdf8',
+            'circle-radius': radiusInterpolate(),
+            'circle-color': '#06b6d4',
             'circle-stroke-width': 1.5,
             'circle-stroke-color': '#ffffff',
             'circle-opacity': 0.9,
+          },
+        },
+        beforeId,
+      );
+
+      map.addLayer(
+        {
+          id: HIT_LAYER_ID,
+          type: 'circle',
+          source: SOURCE_ID,
+          paint: {
+            'circle-radius': hitRadiusInterpolate(),
+            'circle-color': '#000000',
+            'circle-opacity': 0,
+            'circle-stroke-width': 0,
           },
         },
         beforeId,
@@ -94,9 +120,9 @@ export function FontaneLayer() {
         map.getCanvas().style.cursor = '';
       };
 
-      map.on('click', LAYER_ID, onClick);
-      map.on('mouseenter', LAYER_ID, onEnter);
-      map.on('mouseleave', LAYER_ID, onLeave);
+      map.on('click', HIT_LAYER_ID, onClick);
+      map.on('mouseenter', HIT_LAYER_ID, onEnter);
+      map.on('mouseleave', HIT_LAYER_ID, onLeave);
 
       handlersRef.current = { onClick, onEnter, onLeave };
     })();
@@ -108,13 +134,15 @@ export function FontaneLayer() {
 
       const h = handlersRef.current;
       if (h && map) {
-        map.off('click', LAYER_ID, h.onClick);
-        map.off('mouseenter', LAYER_ID, h.onEnter);
-        map.off('mouseleave', LAYER_ID, h.onLeave);
+        map.off('click', HIT_LAYER_ID, h.onClick);
+        map.off('mouseenter', HIT_LAYER_ID, h.onEnter);
+        map.off('mouseleave', HIT_LAYER_ID, h.onLeave);
       }
       handlersRef.current = null;
 
-      if (map?.getLayer(LAYER_ID)) map.removeLayer(LAYER_ID);
+      [HIT_LAYER_ID, LAYER_ID].forEach((id) => {
+        if (map?.getLayer(id)) map.removeLayer(id);
+      });
       if (map?.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
     };
   }, [map, mapReady, t]);

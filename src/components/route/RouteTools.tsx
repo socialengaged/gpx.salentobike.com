@@ -11,6 +11,7 @@ import {
   routeToGpxPoints,
   gpxPointsToRoute,
 } from '@/lib/gpx';
+import { useT } from '@/i18n/useT';
 
 interface RouteToolsProps {
   route: Route;
@@ -19,6 +20,7 @@ interface RouteToolsProps {
 }
 
 export function RouteTools({ route, onRouteChange, onSplitResult }: RouteToolsProps) {
+  const t = useT();
   const [splitPercent, setSplitPercent] = useState(50);
   const [showSplit, setShowSplit] = useState(false);
 
@@ -66,23 +68,19 @@ export function RouteTools({ route, onRouteChange, onSplitResult }: RouteToolsPr
     <div className="space-y-3">
       <div className="flex gap-3 flex-wrap">
         <Button variant="ghost" size="md" onClick={handleReverse}>
-          Reverse route
+          {t('route.tool_reverse')}
         </Button>
-        <Button
-          variant="ghost"
-          size="md"
-          onClick={() => setShowSplit(!showSplit)}
-        >
-          Split route
+        <Button variant="ghost" size="md" onClick={() => setShowSplit(!showSplit)}>
+          {t('route.tool_split')}
         </Button>
         <Button variant="ghost" size="md" onClick={handleExport}>
-          Export GPX
+          {t('route.tool_export_gpx')}
         </Button>
       </div>
       {showSplit && (
         <div className="p-4 rounded-xl bg-slate-100 space-y-3">
           <label className="block text-base text-slate-600">
-            Split at {splitPercent}%
+            {t('route.split_at')} {splitPercent}%
           </label>
           <input
             type="range"
@@ -93,7 +91,7 @@ export function RouteTools({ route, onRouteChange, onSplitResult }: RouteToolsPr
             className="w-full h-3"
           />
           <Button variant="primary" size="md" onClick={handleSplit}>
-            Apply split
+            {t('route.apply_split')}
           </Button>
         </div>
       )}

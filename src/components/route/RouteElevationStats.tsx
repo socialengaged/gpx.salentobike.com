@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { routeToGpxPoints } from '@/lib/gpx';
 import { computeElevationProfile, computeMaxGradient } from '@/lib/gpx';
 import type { Route } from '@/lib/routes/types';
+import { useT } from '@/i18n/useT';
 
 interface RouteElevationStatsProps {
   route: Route;
@@ -15,6 +16,7 @@ function formatDistance(m: number): string {
 }
 
 export function RouteElevationStats({ route }: RouteElevationStatsProps) {
+  const t = useT();
   const { profile, maxGradient, hasElevation } = useMemo(() => {
     const points = routeToGpxPoints(route);
     const hasElev = points.some((p) => p.elevation != null && Number.isFinite(p.elevation));
@@ -35,8 +37,10 @@ export function RouteElevationStats({ route }: RouteElevationStatsProps) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between text-sm text-slate-600">
-        <span>Profilo altimetrico</span>
-        <span>Max pendenza: {maxGradient}%</span>
+        <span>{t('route.elevation_profile')}</span>
+        <span>
+          {t('route.max_slope')}: {maxGradient}%
+        </span>
       </div>
       <div className="h-16 w-full rounded-lg bg-slate-100 overflow-hidden relative">
         <svg

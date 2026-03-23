@@ -5,6 +5,7 @@ import { RouteMap } from '@/components/map/RouteMap';
 import { MapControls } from '@/components/map/MapControls';
 import { RouteDetailClient } from './RouteDetailClient';
 import { RouteElevationStats } from '@/components/route/RouteElevationStats';
+import { useT } from '@/i18n/useT';
 import type { Route } from '@/lib/routes/types';
 
 interface RouteDetailViewProps {
@@ -22,6 +23,7 @@ function formatDuration(min: number): string {
 }
 
 export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
+  const t = useT();
   const [route, setRoute] = useState<Route>(initialRoute);
   const [splitRoutes, setSplitRoutes] = useState<[Route, Route] | null>(null);
 
@@ -65,33 +67,25 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-base">
             <div>
-              <div className="text-lg font-semibold text-slate-900">
-                {formatDistance(route.distanceMeters)}
-              </div>
-              <div className="text-slate-500 text-base">Distanza</div>
+              <div className="text-lg font-semibold text-slate-900">{formatDistance(route.distanceMeters)}</div>
+              <div className="text-slate-500 text-base">{t('route.stat_distance')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900">
-                +{Math.round(route.elevationGainMeters)} m
-              </div>
-              <div className="text-slate-500 text-base">Dislivello +</div>
+              <div className="text-lg font-semibold text-slate-900">+{Math.round(route.elevationGainMeters)} m</div>
+              <div className="text-slate-500 text-base">{t('route.stat_elev_plus')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900">
-                -{Math.round(route.elevationLossMeters)} m
-              </div>
-              <div className="text-slate-500 text-base">Dislivello -</div>
+              <div className="text-lg font-semibold text-slate-900">-{Math.round(route.elevationLossMeters)} m</div>
+              <div className="text-slate-500 text-base">{t('route.stat_elev_minus')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900 capitalize">
-                {route.difficulty}
-              </div>
-              <div className="text-slate-500 text-base">Livello</div>
+              <div className="text-lg font-semibold text-slate-900 capitalize">{route.difficulty}</div>
+              <div className="text-slate-500 text-base">{t('route.stat_level')}</div>
             </div>
           </div>
           <div>
             <div className="font-semibold text-slate-900 text-base mb-1">
-              {formatDuration(route.estimatedDuration)} stimati
+              {formatDuration(route.estimatedDuration)} {t('route.estimated_time')}
             </div>
             <RouteElevationStats route={route} />
           </div>

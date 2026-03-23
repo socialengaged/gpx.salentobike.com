@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapContext } from './MapContext';
+import { ComuneBottomCard } from './ComuneBottomCard';
 import { ComuniLayer } from './ComuniLayer';
 import { FontaneLayer } from './FontaneLayer';
 import { RoutePolyline } from './RoutePolyline';
 import { UserLocationMarker } from './UserLocationMarker';
 import { WaypointLayer } from './WaypointLayer';
+import type { ComuneLite } from '@/lib/comuni/types';
 import type { Route } from '@/lib/routes/types';
 
 interface RouteMapProps {
@@ -62,6 +64,15 @@ export function RouteMap({
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [selectedComune, setSelectedComune] = useState<ComuneLite | null>(null);
+
+  const handleComuneSelect = useCallback((c: ComuneLite | null) => {
+    setSelectedComune(c);
+  }, []);
+
+  useEffect(() => {
+    if (!showComuni) setSelectedComune(null);
+  }, [showComuni]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -157,11 +168,16 @@ export function RouteMap({
   }, [route?.id]);
 
   return (
-    <div ref={mapRef} className={`w-full h-full min-h-[200px] ${className}`.trim()}>
+    <div ref={mapRef} className={`relative w-full h-full min-h-[200px] ${className}`.trim()}>
       <MapContext.Provider value={{ map, mapReady }}>
         {route && <RoutePolyline route={route} />}
         {showFontane && <FontaneLayer />}
-        {showComuni && <ComuniLayer />}
+        {showComuni && (
+          <ComuniLayer
+            selectedSlug={selectedComune?.slug ?? null}
+            onComuneSelect={handleComuneSelect}
+          />
+        )}
         {route?.waypoints && route.waypoints.length > 0 && (
           <WaypointLayer waypoints={route.waypoints} />
         )}
@@ -173,6 +189,9 @@ export function RouteMap({
           />
         )}
         {mapReady && children}
+        {showComuni && selectedComune && (
+          <ComuneBottomCard comune={selectedComune} onClose={() => setSelectedComune(null)} />
+        )}
       </MapContext.Provider>
     </div>
   );
