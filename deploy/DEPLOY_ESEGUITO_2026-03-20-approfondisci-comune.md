@@ -17,5 +17,6 @@
 ## Esecuzione
 
 - Script: `deploy/deploy.ps1 -ServerIP "57.131.16.162"`
-- Smoke: `GET https://gpx.salentobike.com/comuni/lecce` (o altro slug noto) → **200**
-- **Git**: branch `main` — dopo push verificare con `git log -1` (messaggio: `fix: Approfondisci comune da mappa con <a>…`)
+- **Deploy OK** (2026-03-23 ~22:04 UTC): `salentogpx.service` attivo; Nginx HTTPS OK
+- **Smoke HTTPS**: `GET https://gpx.salentobike.com/comuni/lecce` → **200**
+- **Git**: `main` → `origin/main` (commit deploy: `fix: Approfondisci comune da mappa con <a>…` + `docs: deploy note…`)
