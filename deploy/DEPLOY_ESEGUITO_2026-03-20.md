@@ -59,3 +59,4 @@ cd C:\Users\info\Desktop\salentogpx\deploy
 
 - Certificato SSL scade 2026-06-18 (rinnovo automatico via certbot)
 - Chiave SSH: `%USERPROFILE%\.ssh\ssh-key-2026-01-02.key` (OVH, spostata in `.ssh`)
+- **Deploy e problemi aggiornati**: usare sempre `deploy/SINTESI_DEPLOY_E_PROBLEMI.md` (questo file è lo snapshot del primo deploy).

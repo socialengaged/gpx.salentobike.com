@@ -6,7 +6,9 @@ import { MapContext } from './MapContext';
 import { ComuneBottomCard } from './ComuneBottomCard';
 import { ComuniLayer } from './ComuniLayer';
 import { FontaneLayer } from './FontaneLayer';
+import { RouteSegmentCard } from './RouteSegmentCard';
 import { RoutePolyline } from './RoutePolyline';
+import type { RouteSegmentWithStats } from '@/lib/gpx';
 import { UserLocationMarker } from './UserLocationMarker';
 import { WaypointLayer } from './WaypointLayer';
 import type { ComuneLite } from '@/lib/comuni/types';
@@ -65,14 +67,26 @@ export function RouteMap({
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [selectedComune, setSelectedComune] = useState<ComuneLite | null>(null);
+  const [selectedSegment, setSelectedSegment] = useState<RouteSegmentWithStats | null>(null);
 
   const handleComuneSelect = useCallback((c: ComuneLite | null) => {
     setSelectedComune(c);
+    if (c) setSelectedSegment(null);
+  }, []);
+
+  const handleSegmentSelect = useCallback((info: RouteSegmentWithStats | null) => {
+    setSelectedSegment(info);
+    if (info) setSelectedComune(null);
   }, []);
 
   useEffect(() => {
     if (!showComuni) setSelectedComune(null);
   }, [showComuni]);
+
+  useEffect(() => {
+    setSelectedSegment(null);
+    setSelectedComune(null);
+  }, [route?.id]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -136,7 +150,7 @@ export function RouteMap({
         if (route) {
           const b = getRouteBounds(route);
           if (b) {
-            mapInstance.fitBounds(b, { padding: 48, maxZoom: 16 });
+            mapInstance.fitBounds(b, { padding: 28, maxZoom: 14 });
           }
         }
         resizeObserverRef.current = new ResizeObserver(() => {
@@ -170,7 +184,6 @@ export function RouteMap({
   return (
     <div ref={mapRef} className={`relative w-full h-full min-h-[200px] ${className}`.trim()}>
       <MapContext.Provider value={{ map, mapReady }}>
-        {route && <RoutePolyline route={route} />}
         {showFontane && <FontaneLayer />}
         {showComuni && (
           <ComuniLayer
@@ -178,6 +191,7 @@ export function RouteMap({
             onComuneSelect={handleComuneSelect}
           />
         )}
+        {route && <RoutePolyline route={route} onSegmentSelect={handleSegmentSelect} />}
         {route?.waypoints && route.waypoints.length > 0 && (
           <WaypointLayer waypoints={route.waypoints} />
         )}
@@ -189,8 +203,11 @@ export function RouteMap({
           />
         )}
         {mapReady && children}
-        {showComuni && selectedComune && (
+        {showComuni && selectedComune && !selectedSegment && (
           <ComuneBottomCard comune={selectedComune} onClose={() => setSelectedComune(null)} />
+        )}
+        {selectedSegment && (
+          <RouteSegmentCard segment={selectedSegment} onClose={() => setSelectedSegment(null)} />
         )}
       </MapContext.Provider>
     </div>

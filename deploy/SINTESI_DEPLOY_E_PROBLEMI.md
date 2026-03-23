@@ -108,6 +108,24 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
+## Web Vitals, mobile-first, stabilità
+
+- **`WebVitalsReporter`** ([`src/components/layout/WebVitalsReporter.tsx`](../src/components/layout/WebVitalsReporter.tsx)): in **sviluppo** logga LCP / INP / CLS in console. In **produzione** solo se `NEXT_PUBLIC_WEB_VITALS_LOG=1` nel build (utile per debug mobile sul campo).
+- **`layout.tsx`**: `dns-prefetch` + `preconnect` verso `a.tile.openstreetmap.org` (tile mappa OSM dopo primo paint).
+- **`globals.css`**: su `pointer: coarse`, `touch-action: manipulation` su bottoni/link (migliora reattività tap / INP su WebKit legacy).
+- **`MobileShell`**: registrazione Service Worker con **`requestIdleCallback`** (timeout 1.5s) o `setTimeout(0)` fallback — meno lavoro sul main thread al caricamento.
+- **`next.config.ts`**: `poweredByHeader: false` (header in meno).
+- **Mappe (LOD)**: fontane e label comuni con `minzoom` (vedi [`ComuniLayer`](../src/components/map/ComuniLayer.tsx), [`FontaneLayer`](../src/components/map/FontaneLayer.tsx)) per meno draw su zoom regionale.
+
+### Rollback sicuro (produzione)
+
+1. **Codice**: `git revert <commit>` (o `git checkout <tag> -- .`) poi commit.
+2. **Deploy**: rieseguire [`deploy/deploy.ps1`](deploy.ps1) come sempre (build sul server da cartella aggiornata).
+3. **Nginx/systemd**: non toccati se non si modificano file in `deploy/`; backup `gpx-salentobike.bak` resta sul server.
+4. **Emergenza senza git sul server**: ripristinare backup cartella app se ne esiste uno (lo script non crea tarball automatico; il rollback “pulito” è git + redeploy).
+
+---
+
 ## File di deploy
 
 | File | Scopo |
@@ -116,7 +134,7 @@ sudo ls /etc/letsencrypt/live/
 | `gpx.salentobike.com.nginx.conf` | Config Nginx con HTTPS |
 | `gpx.salentobike.com.nginx-http-only.conf` | Config Nginx solo HTTP (fallback) |
 | `salentogpx.service` | Servizio systemd |
-| `DEPLOY_ESEGUITO_*.md` | Storico deploy |
+| `DEPLOY_ESEGUITO_*.md` | Storico deploy (es. `DEPLOY_ESEGUITO_2026-03-23.md`) |
 | `SINTESI_DEPLOY_E_PROBLEMI.md` | Questo file |
 
 ---
@@ -133,6 +151,8 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-23 | **Scheda comune mappa**: card più grande (`max-w-3xl`), titolo comune evidenziato + etichetta «Comune»; elenco righe emoji + nome categoria + numero; note OSM/schede; cerchi e label comuni sulla mappa più grandi |
+| 2026-03-24 | **Route page – mappa vs pannello + click traccia**: pannello controlli più compatto (`max-h` ~42vh, stats/profilo più bassi); mappa con `min-h` generosa; **priorità tap**: `mapHitUtils` + layer order così il tap sulla traccia non viene “rubato” dai comuni/fontane/waypoint; card tappa GPX (`RouteSegmentCard`); hit linea più larga |
 | 2026-03-24 | **Leggibilità mobile (tipografia)**: `html` root **20px** (≤1023px) per scalare tutti i `rem` Tailwind; `body` `1rem` + `line-height` 1.55; `BottomNav` etichette `text-xs` al posto di 10px fissi; popup fontane e label comuni mappa leggermente più grandi |
 | 2026-03-21 | **Mobile Map UX**: comuni/fontane marker zoom-adattivi + hit-area tappabile; etichette nome comune (zoom ≥11); `ComuneBottomCard` in basso al posto del popup MapLibre; selezione colore + `flyTo`; fontane colore cyan distinto; i18n pannello route + `RouteTools`/`RouteElevationStats`; toggle layer a icone; sezione Avanzate (default chiusa) con cerca comuni e strumenti GPX |
 | 2026-03-21 | **Mobile UX Overhaul**: BottomNav 4 tab (Home/Route/Salvate/Installa); hero gradient home; route cards con bordo difficolta e icone stats; Avvia route sempre visibile; contatto WhatsApp (wa.me/393204864478); footer Made with love by SalentoBike; scrollbar nascosti su mobile; saved page i18n; fix Part 2 |
@@ -157,16 +177,17 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-## Fix mappa tagliata (2026-03-20)
+## Fix mappa tagliata (2026-03-20) + evoluzioni layout route
 
-**Problema**: Mappa tagliata su mobile e desktop in produzione; OK in locale.
+**Problema originale**: Mappa tagliata su mobile e desktop in produzione; OK in locale.
 
-**Fix applicati**:
+**Fix strutturali (ancora validi)**:
 - `layout.tsx`: body `h-full min-h-full`
 - `MobileShell.tsx`: `h-dvh min-h-dvh`, main `min-h-0`
-- `RouteDetailView.tsx`: contenitore mappa `flex-1 min-h-0 min-h-[200px] overflow-hidden`
-- `RouteMap.tsx`: resize MapLibre a 100ms e 400ms dopo load per layout shift
+- `RouteDetailView.tsx`: contenitore mappa `flex-1 min-h-0` + altezza minima generosa (es. `min-h-[min(50vh,100%)]`) e `overflow-hidden` — **non** più il vecchio solo `min-h-[200px]`
+- `RouteMap.tsx`: `ResizeObserver` + resize MapLibre ritardato dopo load per layout shift
+- `RouteDetailClient.tsx`: pannello inferiore con altezza massima controllata così la mappa resta la parte dominante dello schermo
 
 ---
 
-*Ultimo aggiornamento: 2026-03-24 (tipografia mobile + deploy)*
+*Ultimo aggiornamento: 2026-03-24 (Web Vitals, mobile-first, rollback, LOD mappa)*

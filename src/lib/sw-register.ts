@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Register SW as soon as the client runs — not on `window.load`.
- * Delayed registration can block Chrome from firing `beforeinstallprompt`.
+ * Called from MobileShell after `requestIdleCallback` (or next tick) so first interaction stays fast.
+ * Registration is still early enough for `beforeinstallprompt` in practice.
  */
 export function registerServiceWorker(): void {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;

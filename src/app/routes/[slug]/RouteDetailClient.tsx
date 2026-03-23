@@ -179,11 +179,11 @@ export function RouteDetailClient({
           {t('route.off_route')}
         </div>
       )}
-      <div className="flex-shrink-0 bg-white border-t border-slate-200">
+      <div className="flex-shrink-0 bg-white border-t border-slate-200 flex flex-col max-h-[min(42vh,420px)] min-h-0">
         <button
           type="button"
           onClick={() => setPanelCollapsed((c) => !c)}
-          className="w-full flex items-center justify-between px-4 py-3 gap-3 hover:bg-slate-50 active:bg-slate-100 touch-manipulation min-h-[52px]"
+          className="w-full flex items-center justify-between px-4 py-2 gap-3 hover:bg-slate-50 active:bg-slate-100 touch-manipulation min-h-[44px] shrink-0"
           aria-expanded={!panelCollapsed}
         >
           <span className="text-base font-medium text-slate-600">
@@ -199,7 +199,7 @@ export function RouteDetailClient({
           </svg>
         </button>
         {!panelCollapsed && (
-          <div className="p-5 space-y-4 overflow-y-auto max-h-[35vh]">
+          <div className="px-3 py-2 space-y-2 overflow-y-auto flex-1 min-h-0">
             {tracking && (
               <div className="flex justify-between items-center text-sm">
                 <span className="text-slate-600">
@@ -210,13 +210,13 @@ export function RouteDetailClient({
             )}
             {renderStats}
 
-            <div className="flex flex-wrap gap-2 items-center pt-1">
+            <div className="flex flex-wrap gap-2 items-center pt-0.5">
               <button
                 type="button"
                 onClick={() => setShowComuni((s) => !s)}
                 aria-pressed={showComuni}
                 aria-label={showComuni ? t('route.aria_layer_comuni_on') : t('route.aria_layer_comuni_off')}
-                className={`inline-flex items-center justify-center w-12 h-12 min-w-[48px] min-h-[48px] rounded-full border-2 transition-colors ${
+                className={`inline-flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border-2 transition-colors ${
                   showComuni ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 bg-slate-50 text-slate-500'
                 }`}
               >
@@ -227,7 +227,7 @@ export function RouteDetailClient({
                 onClick={() => setShowFontane((s) => !s)}
                 aria-pressed={showFontane}
                 aria-label={showFontane ? t('route.aria_layer_fontane_on') : t('route.aria_layer_fontane_off')}
-                className={`inline-flex items-center justify-center w-12 h-12 min-w-[48px] min-h-[48px] rounded-full border-2 transition-colors ${
+                className={`inline-flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border-2 transition-colors ${
                   showFontane ? 'border-cyan-500 bg-cyan-50 text-cyan-700' : 'border-slate-200 bg-slate-50 text-slate-500'
                 }`}
               >
@@ -309,7 +309,7 @@ export function RouteDetailClient({
               </>
             )}
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <Button variant="outline" size="md" fullWidth onClick={handleSaveOffline} disabled={saved}>
                 {saved ? t('route.saved_offline') : t('route.save_offline')}
               </Button>
@@ -324,7 +324,7 @@ export function RouteDetailClient({
             </div>
           </div>
         )}
-        <div className="px-5 pb-4 pt-2 border-t border-slate-100">
+        <div className="px-4 pb-3 pt-2 border-t border-slate-100 shrink-0">
           <Button variant="primary" size="lg" fullWidth onClick={handleStartRoute}>
             {tracking ? t('route.stop_tracking') : t('route.start_route')}
           </Button>

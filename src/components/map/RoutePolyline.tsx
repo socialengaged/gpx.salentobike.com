@@ -1,55 +1,40 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import type { MapLayerMouseEvent } from 'maplibre-gl';
 import { useMapContext } from './MapContext';
 import type { Route } from '@/lib/routes/types';
-import { routeToGpxPoints } from '@/lib/gpx';
-import { simplifyTrack, toGeoJsonLineString } from '@/lib/gpx';
-
-const SIMPLIFY_THRESHOLD = 500;
-const SIMPLIFY_TOLERANCE_M = 5;
+import { getRouteSegmentsWithStats, type RouteSegmentWithStats } from '@/lib/gpx';
 
 /** Colors for multi-stage routes (tappe) */
 const STAGE_COLORS = [
-  '#0ea5e9', // sky
-  '#22c55e', // emerald
-  '#eab308', // amber
-  '#ec4899', // pink
-  '#8b5cf6', // violet
-  '#f97316', // orange
-  '#06b6d4', // cyan
-  '#84cc16', // lime
+  '#0ea5e9',
+  '#22c55e',
+  '#eab308',
+  '#ec4899',
+  '#8b5cf6',
+  '#f97316',
+  '#06b6d4',
+  '#84cc16',
 ];
+
+const LINE_WIDTH = 6;
+/** Wide tap target for mobile; must stay queryable (opacity > 0). */
+const HIT_WIDTH = 36;
 
 interface RoutePolylineProps {
   route: Route;
+  onSegmentSelect?: (info: RouteSegmentWithStats | null) => void;
 }
 
-export function RoutePolyline({ route }: RoutePolylineProps) {
+export function RoutePolyline({ route, onSegmentSelect }: RoutePolylineProps) {
   const { map, mapReady } = useMapContext();
-  const addedRef = useRef(false);
+  const onSelectRef = useRef<RoutePolylineProps['onSegmentSelect']>(onSegmentSelect);
+  onSelectRef.current = onSegmentSelect;
 
-  const { segments, isMulti } = useMemo(() => {
-    const geo = route.normalizedGeoJson;
-    if (geo.type === 'MultiLineString' && geo.coordinates.length > 1) {
-      return {
-        segments: geo.coordinates.map((coords) => ({
-          type: 'LineString' as const,
-          coordinates: coords,
-        })),
-        isMulti: true,
-      };
-    }
-    const points = routeToGpxPoints(route);
-    const simplified =
-      points.length > SIMPLIFY_THRESHOLD
-        ? simplifyTrack(points, SIMPLIFY_TOLERANCE_M)
-        : points;
-    return {
-      segments: [toGeoJsonLineString(simplified)],
-      isMulti: false,
-    };
-  }, [route.normalizedGeoJson, route?.id]);
+  const segments = useMemo(() => getRouteSegmentsWithStats(route), [route.normalizedGeoJson, route.id]);
+
+  const isMulti = segments.length > 1;
 
   useEffect(() => {
     if (!map || !mapReady) return;
@@ -57,34 +42,39 @@ export function RoutePolyline({ route }: RoutePolylineProps) {
     const sourceIds: string[] = [];
     const layerIds: string[] = [];
 
-    segments.forEach((geom, i) => {
+    segments.forEach((seg, i) => {
       const sourceId = `route-polyline-${i}`;
       const layerId = `route-line-${i}`;
+      const hitLayerId = `route-hit-${i}`;
       sourceIds.push(sourceId);
-      layerIds.push(layerId);
+      layerIds.push(layerId, hitLayerId);
 
       const color = isMulti ? STAGE_COLORS[i % STAGE_COLORS.length] : '#0ea5e9';
+
+      const feature: GeoJSON.Feature = {
+        type: 'Feature',
+        properties: {
+          segmentIndex: seg.segmentIndex,
+          totalSegments: seg.totalSegments,
+          distanceMeters: Math.round(seg.distanceMeters),
+          elevationGainMeters: Math.round(seg.elevationGainMeters),
+          elevationLossMeters: Math.round(seg.elevationLossMeters),
+          pointCount: seg.pointCount,
+        },
+        geometry: seg.geometry,
+      };
 
       if (map.getSource(sourceId)) {
         const src = map.getSource(sourceId) as unknown as {
           setData: (d: GeoJSON.Feature) => void;
         };
-        if (src?.setData) {
-          src.setData({
-            type: 'Feature',
-            properties: {},
-            geometry: geom,
-          });
-        }
+        src?.setData?.(feature);
       } else {
         map.addSource(sourceId, {
           type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: geom,
-          },
+          data: feature,
         });
+
         map.addLayer({
           id: layerId,
           type: 'line',
@@ -95,22 +85,69 @@ export function RoutePolyline({ route }: RoutePolylineProps) {
           },
           paint: {
             'line-color': color,
-            'line-width': 4,
+            'line-width': LINE_WIDTH,
+          },
+        });
+
+        map.addLayer({
+          id: hitLayerId,
+          type: 'line',
+          source: sourceId,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#000000',
+            'line-width': HIT_WIDTH,
+            'line-opacity': 0.06,
           },
         });
       }
     });
 
-    addedRef.current = true;
+    const hitLayerIds = segments.map((_, i) => `route-hit-${i}`);
+
+    const pickSegment = (e: MapLayerMouseEvent): RouteSegmentWithStats | null => {
+      const slug = e.features?.[0]?.properties;
+      if (!slug) return null;
+      const si = Number(slug.segmentIndex);
+      const seg = segments[si];
+      if (!seg) return null;
+      return seg;
+    };
+
+    const onHitClick = (e: MapLayerMouseEvent) => {
+      const info = pickSegment(e);
+      if (info) onSelectRef.current?.(info);
+    };
+
+    const onEnter = () => {
+      map.getCanvas().style.cursor = 'pointer';
+    };
+    const onLeave = () => {
+      map.getCanvas().style.cursor = '';
+    };
+
+    hitLayerIds.forEach((hid) => {
+      map.on('click', hid, onHitClick);
+      map.on('mouseenter', hid, onEnter);
+      map.on('mouseleave', hid, onLeave);
+    });
 
     return () => {
+      hitLayerIds.forEach((hid) => {
+        map.off('click', hid, onHitClick);
+        map.off('mouseenter', hid, onEnter);
+        map.off('mouseleave', hid, onLeave);
+      });
+
       layerIds.forEach((id) => {
         if (map.getLayer(id)) map.removeLayer(id);
       });
       sourceIds.forEach((id) => {
         if (map.getSource(id)) map.removeSource(id);
       });
-      addedRef.current = false;
     };
   }, [map, mapReady, segments, isMulti]);
 

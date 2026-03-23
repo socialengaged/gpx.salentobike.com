@@ -17,6 +17,9 @@
   "comune.no_data": "No list data for this point.",
   "comune.no_sections": "No information available for this municipality.",
   "comune.position": "Location",
+  "comune.map_card_municipality": "Municipality",
+  "comune.map_hint_row_attr": "Estimate from card texts",
+  "comune.map_hint_row_spec": "Estimate from card texts",
   "comune.summary_title": "At a glance (cyclists)",
   "comune.summary_osm_note": "OpenStreetMap counts within about 5 km of the municipality center.",
   "comune.cuisine_badge": "🍴 Cuisine & dining",
@@ -122,6 +125,10 @@
   "route.aria_layer_fontane_off": "Fountains hidden on map",
   "route.elevation_profile": "Elevation profile",
   "route.max_slope": "Max slope",
+  "route.segment_stage": "Stage {n} of {total}",
+  "route.segment_single": "Route",
+  "route.segment_points": "Track points",
+  "route.segment_aria": "Stage details",
   "routes.retry": "Retry",
   "routes.loading": "Loading routes…"
 }

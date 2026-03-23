@@ -27,6 +27,17 @@ body {
   line-height: 1.5;
 }
 
+/* Mobile INP: reduce 300ms tap delay on legacy WebKit; does not block zoom on inputs */
+@media (pointer: coarse) {
+  button,
+  a[href],
+  [role='button'],
+  input[type='button'],
+  input[type='submit'] {
+    touch-action: manipulation;
+  }
+}
+
 /* Mobile: larger root rem so text-sm/base/lg all scale up (readability on small screens) */
 @media (max-width: 1023px) {
   html {

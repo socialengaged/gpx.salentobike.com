@@ -3,11 +3,15 @@
 import { useEffect, useRef } from 'react';
 import type { MapLayerMouseEvent } from 'maplibre-gl';
 import { useMapContext } from './MapContext';
+import { isClickOnRouteHit } from './mapHitUtils';
 import { useLocale } from '@/i18n/useLocale';
 
 const SOURCE_ID = 'fontane-puglia';
 const LAYER_ID = 'fontane-puglia-circles';
 const HIT_LAYER_ID = 'fontane-puglia-hit';
+
+/** No drawing/taps below this zoom — avoids ~1.4k circles at regional zoom. */
+const MIN_ZOOM_FONTANE = 10;
 
 function escapeHtml(s: string): string {
   const div = document.createElement('div');
@@ -86,6 +90,7 @@ export function FontaneLayer() {
           id: HIT_LAYER_ID,
           type: 'circle',
           source: SOURCE_ID,
+          minzoom: MIN_ZOOM_FONTANE,
           paint: {
             'circle-radius': hitRadiusInterpolate(),
             'circle-color': '#000000',
@@ -103,6 +108,7 @@ export function FontaneLayer() {
       const title = t('map.fontane_public');
 
       const onClick = (e: MapLayerMouseEvent) => {
+        if (isClickOnRouteHit(map, e.point)) return;
         const lat = e.features?.[0]?.properties?.lat as number | undefined;
         const lon = e.features?.[0]?.properties?.lon as number | undefined;
         if (lat == null || lon == null) return;

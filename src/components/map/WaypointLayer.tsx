@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { MapLayerMouseEvent } from 'maplibre-gl';
 import { useMapContext } from './MapContext';
+import { isClickOnRouteHit } from './mapHitUtils';
 import type { RouteWaypoint, WaypointType } from '@/lib/routes/types';
 
 const TYPE_COLORS: Record<WaypointType | 'default', string> = {
@@ -25,7 +27,7 @@ export function WaypointLayer({ waypoints }: WaypointLayerProps) {
 
     const sources: string[] = [];
     const layers: string[] = [];
-    const listeners: Array<() => void> = [];
+    const listeners: Array<(e: MapLayerMouseEvent) => void> = [];
 
     waypoints.forEach((wp, i) => {
       const sourceId = `waypoint-${wp.id}`;
@@ -61,7 +63,10 @@ export function WaypointLayer({ waypoints }: WaypointLayerProps) {
         },
       });
 
-      const handler = () => setPopup(wp);
+      const handler = (e: MapLayerMouseEvent) => {
+        if (isClickOnRouteHit(map, e.point)) return;
+        setPopup(wp);
+      };
       map.on('click', layerId, handler);
       listeners.push(handler);
 

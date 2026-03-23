@@ -44,7 +44,7 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
       onSplitRoutesChange={setSplitRoutes}
       onSplitResult={handleSplitResult}
       renderMap={(userPosition, mapState, showComuni = true, showFontane = true) => (
-        <div className="flex-1 min-h-0 min-h-[200px] relative w-full overflow-hidden">
+        <div className="flex-1 min-h-0 min-h-[min(50vh,100%)] relative w-full overflow-hidden">
           <RouteMap
             route={route}
             userPosition={userPosition}
@@ -65,26 +65,26 @@ export function RouteDetailView({ route: initialRoute }: RouteDetailViewProps) {
       )}
       renderStats={
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-base">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-sm">
             <div>
-              <div className="text-lg font-semibold text-slate-900">{formatDistance(route.distanceMeters)}</div>
-              <div className="text-slate-500 text-base">{t('route.stat_distance')}</div>
+              <div className="text-base font-semibold text-slate-900">{formatDistance(route.distanceMeters)}</div>
+              <div className="text-slate-500 text-xs">{t('route.stat_distance')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900">+{Math.round(route.elevationGainMeters)} m</div>
-              <div className="text-slate-500 text-base">{t('route.stat_elev_plus')}</div>
+              <div className="text-base font-semibold text-slate-900">+{Math.round(route.elevationGainMeters)} m</div>
+              <div className="text-slate-500 text-xs">{t('route.stat_elev_plus')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900">-{Math.round(route.elevationLossMeters)} m</div>
-              <div className="text-slate-500 text-base">{t('route.stat_elev_minus')}</div>
+              <div className="text-base font-semibold text-slate-900">-{Math.round(route.elevationLossMeters)} m</div>
+              <div className="text-slate-500 text-xs">{t('route.stat_elev_minus')}</div>
             </div>
             <div>
-              <div className="text-lg font-semibold text-slate-900 capitalize">{route.difficulty}</div>
-              <div className="text-slate-500 text-base">{t('route.stat_level')}</div>
+              <div className="text-base font-semibold text-slate-900 capitalize">{route.difficulty}</div>
+              <div className="text-slate-500 text-xs">{t('route.stat_level')}</div>
             </div>
           </div>
           <div>
-            <div className="font-semibold text-slate-900 text-base mb-1">
+            <div className="font-semibold text-slate-900 text-sm mb-0.5">
               {formatDuration(route.estimatedDuration)} {t('route.estimated_time')}
             </div>
             <RouteElevationStats route={route} />

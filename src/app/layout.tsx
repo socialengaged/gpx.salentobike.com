@@ -56,6 +56,11 @@ export default async function RootLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Map route pages: faster TLS + DNS for OSM raster tiles (LCP follow-up / map pan) */}
+        <link rel="dns-prefetch" href="https://a.tile.openstreetmap.org" />
+        <link rel="preconnect" href="https://a.tile.openstreetmap.org" crossOrigin="anonymous" />
+      </head>
       <body className="h-full min-h-full font-sans text-slate-900">
         <Script id="salento-pwa-bip" strategy="beforeInteractive">
           {`

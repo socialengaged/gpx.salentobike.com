@@ -35,14 +35,14 @@ export function RouteElevationStats({ route }: RouteElevationStatsProps) {
   const lastDist = profile[profile.length - 1]?.distKm ?? 0;
 
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm text-slate-600">
+    <div className="space-y-1">
+      <div className="flex justify-between text-xs text-slate-600">
         <span>{t('route.elevation_profile')}</span>
         <span>
           {t('route.max_slope')}: {maxGradient}%
         </span>
       </div>
-      <div className="h-16 w-full rounded-lg bg-slate-100 overflow-hidden relative">
+      <div className="h-12 w-full rounded-lg bg-slate-100 overflow-hidden relative">
         <svg
           viewBox={`0 0 100 100`}
           preserveAspectRatio="none"

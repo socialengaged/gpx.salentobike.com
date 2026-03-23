@@ -22,3 +22,4 @@ export { splitTrackAtIndex, splitTrackAtPercentage, type SplitResult } from './s
 export { mergeTracks, mergeTracksStats } from './mergeTracks';
 export { routeToGpx, downloadGpx } from './exportGpx';
 export { routeToGpxPoints, gpxPointsToRoute } from './routeUtils';
+export { getRouteSegmentsWithStats, type RouteSegmentWithStats } from './segmentStats';

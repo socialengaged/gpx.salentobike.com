@@ -17,6 +17,9 @@
   "comune.no_data": "Nessun dato disponibile per questo punto.",
   "comune.no_sections": "Nessuna informazione disponibile per questo comune.",
   "comune.position": "Posizione",
+  "comune.map_card_municipality": "Comune",
+  "comune.map_hint_row_attr": "Stima dai testi delle schede",
+  "comune.map_hint_row_spec": "Stima dai testi delle schede",
   "comune.summary_title": "A colpo d'occhio (ciclisti)",
   "comune.summary_osm_note": "Conteggi OpenStreetMap nel raggio di circa 5 km dal centro comune.",
   "comune.cuisine_badge": "🍴 Cucina / ristoranti",
@@ -122,6 +125,10 @@
   "route.aria_layer_fontane_off": "Fontane nascoste sulla mappa",
   "route.elevation_profile": "Profilo altimetrico",
   "route.max_slope": "Max pendenza",
+  "route.segment_stage": "Tappa {n} di {total}",
+  "route.segment_single": "Percorso",
+  "route.segment_points": "Punti traccia",
+  "route.segment_aria": "Dettaglio tappa",
   "routes.retry": "Riprova",
   "routes.loading": "Caricamento route…"
 }

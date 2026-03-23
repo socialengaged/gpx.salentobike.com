@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import type { MapLayerMouseEvent } from 'maplibre-gl';
 import { useMapContext } from './MapContext';
+import { isClickOnRouteHit } from './mapHitUtils';
 import type { ComuneLite } from '@/lib/comuni/types';
 
 const SOURCE_ID = 'comuni-puglia';
@@ -10,13 +11,16 @@ const LAYER_ID = 'comuni-puglia-circles';
 const HIT_LAYER_ID = 'comuni-puglia-hit';
 const LABEL_LAYER_ID = 'comuni-puglia-labels';
 
+/** Labels only from this zoom — less symbol collision work at mid zoom. */
+const MIN_ZOOM_COMUNE_LABELS = 11;
+
 function radiusInterpolate(): maplibregl.ExpressionSpecification {
-  return ['interpolate', ['linear'], ['zoom'], 7, 5, 9, 9, 11, 13, 13, 16];
+  return ['interpolate', ['linear'], ['zoom'], 7, 8, 9, 13, 11, 18, 13, 24];
 }
 
-/** Hit area = visible + 10px at each zoom stop. */
+/** Hit area = visible + margin for touch (must stay above route hit priority guard). */
 function hitRadiusInterpolate(): maplibregl.ExpressionSpecification {
-  return ['interpolate', ['linear'], ['zoom'], 7, 15, 9, 19, 11, 23, 13, 26];
+  return ['interpolate', ['linear'], ['zoom'], 7, 20, 9, 26, 11, 30, 13, 34];
 }
 
 export interface ComuniLayerProps {
@@ -94,20 +98,21 @@ export function ComuniLayer({ selectedSlug = null, onComuneSelect }: ComuniLayer
           id: LABEL_LAYER_ID,
           type: 'symbol',
           source: SOURCE_ID,
-          minzoom: 11,
+          minzoom: MIN_ZOOM_COMUNE_LABELS,
           layout: {
             'text-field': ['get', 'nome'],
-            'text-size': 14,
-            'text-offset': [0, 1.5],
+            'text-size': ['interpolate', ['linear'], ['zoom'], 11, 13, 12, 15, 14, 18],
+            'text-offset': [0, 1.65],
             'text-anchor': 'top',
-            'text-max-width': 14,
+            'text-max-width': 12,
             'text-allow-overlap': false,
             'text-ignore-placement': false,
+            'text-optional': true,
           },
           paint: {
             'text-color': '#0f172a',
             'text-halo-color': '#ffffff',
-            'text-halo-width': 1.5,
+            'text-halo-width': 2,
           },
         },
         beforeId,
@@ -129,6 +134,7 @@ export function ComuniLayer({ selectedSlug = null, onComuneSelect }: ComuniLayer
       );
 
       const onClick = (e: MapLayerMouseEvent) => {
+        if (isClickOnRouteHit(map, e.point)) return;
         const slug = e.features?.[0]?.properties?.slug as string | undefined;
         if (!slug) return;
         const comune = comuniRef.current.get(slug);
