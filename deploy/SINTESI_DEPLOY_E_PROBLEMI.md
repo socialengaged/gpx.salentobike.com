@@ -110,7 +110,8 @@ sudo ls /etc/letsencrypt/live/
 
 ## Web Vitals, mobile-first, stabilità
 
-- **`WebVitalsReporter`** ([`src/components/layout/WebVitalsReporter.tsx`](../src/components/layout/WebVitalsReporter.tsx)): in **sviluppo** logga LCP / INP / CLS in console. In **produzione** solo se `NEXT_PUBLIC_WEB_VITALS_LOG=1` nel build (utile per debug mobile sul campo).
+- **`WebVitalsReporter`** ([`src/components/layout/WebVitalsReporter.tsx`](../src/components/layout/WebVitalsReporter.tsx)): in **sviluppo** logga LCP / INP / CLS in console. In **produzione** solo se `NEXT_PUBLIC_WEB_VITALS_LOG=1` nel build (vedi [`.env.example`](../.env.example); utile per debug mobile sul campo).
+- **Checklist test** (Lighthouse lab + usabilità manuale + comandi): [`docs/usability-performance-checklist.md`](../docs/usability-performance-checklist.md).
 - **`layout.tsx`**: `dns-prefetch` + `preconnect` verso `a.tile.openstreetmap.org` (tile mappa OSM dopo primo paint).
 - **`globals.css`**: su `pointer: coarse`, `touch-action: manipulation` su bottoni/link (migliora reattività tap / INP su WebKit legacy).
 - **`MobileShell`**: registrazione Service Worker con **`requestIdleCallback`** (timeout 1.5s) o `setTimeout(0)` fallback — meno lavoro sul main thread al caricamento.
@@ -151,6 +152,7 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-24 | **QA usabilità/performance**: `docs/usability-performance-checklist.md` (Lighthouse su `/`, `/routes`, `/routes/lecce-loop`; tabella punteggi; checklist mobile manuale); `.env.example` per `NEXT_PUBLIC_WEB_VITALS_LOG` |
 | 2026-03-23 | **Scheda comune mappa**: card più grande (`max-w-3xl`), titolo comune evidenziato + etichetta «Comune»; elenco righe emoji + nome categoria + numero; note OSM/schede; cerchi e label comuni sulla mappa più grandi |
 | 2026-03-24 | **Route page – mappa vs pannello + click traccia**: pannello controlli più compatto (`max-h` ~42vh, stats/profilo più bassi); mappa con `min-h` generosa; **priorità tap**: `mapHitUtils` + layer order così il tap sulla traccia non viene “rubato” dai comuni/fontane/waypoint; card tappa GPX (`RouteSegmentCard`); hit linea più larga |
 | 2026-03-24 | **Leggibilità mobile (tipografia)**: `html` root **20px** (≤1023px) per scalare tutti i `rem` Tailwind; `body` `1rem` + `line-height` 1.55; `BottomNav` etichette `text-xs` al posto di 10px fissi; popup fontane e label comuni mappa leggermente più grandi |

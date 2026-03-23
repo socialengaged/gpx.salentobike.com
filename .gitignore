@@ -26,6 +26,9 @@
 # comuni build cache
 scripts/.comuni-geocode-cache.json
 
+# Lighthouse JSON dumps (rigenerabili con npx lighthouse)
+docs/lighthouse-report-*.json
+
 # misc
 .DS_Store
 *.pem
@@ -38,6 +41,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel

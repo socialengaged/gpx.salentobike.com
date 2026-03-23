@@ -36,6 +36,10 @@ npm start
 
 The build generates a service worker in `public/sw.js` for offline support.
 
+## Testing (mobile / performance)
+
+See [`docs/usability-performance-checklist.md`](docs/usability-performance-checklist.md) for Lighthouse commands, optional Web Vitals logging (`NEXT_PUBLIC_WEB_VITALS_LOG`, see `.env.example`), and a manual usability checklist.
+
 ## Project Structure
 
 ```
