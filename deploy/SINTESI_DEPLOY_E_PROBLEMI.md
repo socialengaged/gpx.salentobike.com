@@ -36,6 +36,12 @@
 
 ## Problemi già riscontrati e fix
 
+### Approfondisci comune dalla mappa route → errore (refresh / indietro)
+
+**Causa probabile**: navigazione **client-side** (`next/link`) partendo dalla pagina route con **MapLibre** attivo: durante la transizione la mappa viene smontata (WebGL) mentre Next carica il segmento `/comuni/[slug]`; su mobile/PWA può comparire la schermata di errore dell’app invece della scheda comune.
+
+**Fix**: in [`ComuneBottomCard`](../src/components/map/ComuneBottomCard.tsx) il pulsante «Approfondisci» usa un **`<a href>`** (navigazione documento completa), non `Link`.
+
 ### 1. HTTPS mostra un altro sito (Ads Control Center o simile)
 
 **Causa**: La config Nginx per gpx.salentobike.com era HTTP-only (porta 80). Le richieste HTTPS (porta 443) venivano gestite dal *default server* di Nginx, che puntava a un’altra app sullo stesso server.
@@ -135,7 +141,7 @@ sudo ls /etc/letsencrypt/live/
 | `gpx.salentobike.com.nginx.conf` | Config Nginx con HTTPS |
 | `gpx.salentobike.com.nginx-http-only.conf` | Config Nginx solo HTTP (fallback) |
 | `salentogpx.service` | Servizio systemd |
-| `DEPLOY_ESEGUITO_*.md` | Storico deploy (es. `DEPLOY_ESEGUITO_2026-03-23.md`) |
+| `DEPLOY_ESEGUITO_*.md` | Storico deploy (es. `DEPLOY_ESEGUITO_2026-03-23.md`, `DEPLOY_ESEGUITO_2026-03-20-approfondisci-comune.md`) |
 | `SINTESI_DEPLOY_E_PROBLEMI.md` | Questo file |
 
 ---
@@ -152,6 +158,7 @@ sudo ls /etc/letsencrypt/live/
 
 | Data | Modifica |
 |------|----------|
+| 2026-03-20 | **Fix Approfondisci da mappa route**: link scheda comune con `<a href>` (navigazione piena) per evitare errore dopo tap da `ComuneBottomCard` con MapLibre attivo |
 | 2026-03-24 | **QA usabilità/performance**: `docs/usability-performance-checklist.md` (Lighthouse su `/`, `/routes`, `/routes/lecce-loop`; tabella punteggi; checklist mobile manuale); `.env.example` per `NEXT_PUBLIC_WEB_VITALS_LOG` |
 | 2026-03-23 | **Scheda comune mappa**: card più grande (`max-w-3xl`), titolo comune evidenziato + etichetta «Comune»; elenco righe emoji + nome categoria + numero; note OSM/schede; cerchi e label comuni sulla mappa più grandi |
 | 2026-03-24 | **Route page – mappa vs pannello + click traccia**: pannello controlli più compatto (`max-h` ~42vh, stats/profilo più bassi); mappa con `min-h` generosa; **priorità tap**: `mapHitUtils` + layer order così il tap sulla traccia non viene “rubato” dai comuni/fontane/waypoint; card tappa GPX (`RouteSegmentCard`); hit linea più larga |
@@ -192,4 +199,4 @@ sudo ls /etc/letsencrypt/live/
 
 ---
 
-*Ultimo aggiornamento: 2026-03-24 (Web Vitals, mobile-first, rollback, LOD mappa)*
+*Ultimo aggiornamento: 2026-03-20 (fix Approfondisci da mappa route → `<a href>`; git + deploy allineati)*

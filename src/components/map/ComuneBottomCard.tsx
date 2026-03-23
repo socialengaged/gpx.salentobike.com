@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import type { ComuneLite } from '@/lib/comuni/types';
 import { useLocale } from '@/i18n/useLocale';
 import { useT } from '@/i18n/useT';
@@ -109,12 +108,18 @@ export function ComuneBottomCard({ comune, onClose }: ComuneBottomCardProps) {
         </div>
 
         <div className="px-4 pb-4 sm:pb-3 pt-0.5">
-          <Link
+          {/*
+            Full document navigation (plain <a>) — not next/link. Client-side transition from
+            the route map page tears down MapLibre/WebGL while React navigates; on mobile + SW
+            that can surface as an application error ("refresh / go back"). Hard navigation avoids it.
+          */}
+          <a
             href={`/comuni/${comune.slug}`}
-            className="flex w-full items-center justify-center text-center py-3.5 sm:py-2.5 rounded-xl bg-sky-600 text-white text-sm sm:text-base font-semibold hover:bg-sky-700 transition-colors min-h-[48px] sm:min-h-[44px]"
+            onClick={(e) => e.stopPropagation()}
+            className="flex w-full items-center justify-center text-center py-3.5 sm:py-2.5 rounded-xl bg-sky-600 text-white text-sm sm:text-base font-semibold hover:bg-sky-700 transition-colors min-h-[48px] sm:min-h-[44px] touch-manipulation"
           >
             {L.popupMore}
-          </Link>
+          </a>
         </div>
       </div>
     </div>
