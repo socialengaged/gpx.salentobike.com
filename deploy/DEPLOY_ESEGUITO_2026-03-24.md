@@ -9,7 +9,10 @@
 ## Esecuzione
 
 - Script: `deploy/deploy.ps1 -ServerIP "57.131.16.162"`
-- Dopo deploy: smoke HTTPS (home + `/routes`), eventuale Lighthouse mobile su `https://gpx.salentobike.com`
+- **Deploy OK** (UTC ~19:55 server log); `salentogpx.service` attivo; Nginx `nginx -t` OK
+- **Smoke HTTPS**: `GET /` → 200, `GET /routes` → 200
+- **Git**: commit `9ae70d6` su `main`, push `origin/main` OK
+- Dopo deploy: Lighthouse mobile / PageSpeed (campo) su `https://gpx.salentobike.com` opzionale; in dev aprire console per log `[web-vitals]`
 
 ## Rollback
 
