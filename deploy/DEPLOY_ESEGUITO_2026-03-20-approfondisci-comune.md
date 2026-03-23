@@ -18,4 +18,4 @@
 
 - Script: `deploy/deploy.ps1 -ServerIP "57.131.16.162"`
 - Smoke: `GET https://gpx.salentobike.com/comuni/lecce` (o altro slug noto) → **200**
-- **Git**: commit `d2d91f8` su `main`, push `origin/main`
+- **Git**: branch `main` — dopo push verificare con `git log -1` (messaggio: `fix: Approfondisci comune da mappa con <a>…`)
